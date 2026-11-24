@@ -2,6 +2,8 @@
 
 ## 0.1.0 Alpha · first release target
 
+- Added Nova Gaming Hub, optional gaming and recording tools, native Steam discovery, per-game boost, and MangoHud configuration.
+
 - Added bounded ZRAM, an on-demand Performance Center, reversible workload profiles, package size reports, and a Linux guest benchmark.
 - Added CPU history and guest benchmark checks for display, networking, audio, and APT sources.
 

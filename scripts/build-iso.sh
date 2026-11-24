@@ -125,6 +125,9 @@ for input in launchers.tsv brand-launchers.awk; do
     install -Dm0644 "$ROOT/apps/$input" "$tree/usr/lib/novaos/$input"
 done
 install -Dm0644 "$ROOT/apps/Performance.qml" "$tree/usr/lib/novaos/Performance.qml"
+install -Dm0644 "$ROOT/apps/Gaming.qml" "$tree/usr/lib/novaos/Gaming.qml"
+install -Dm0644 "$ROOT/apps/mangohud.conf" "$tree/usr/share/novaos/mangohud.conf"
+install -Dm0755 "$ROOT/apps/nova-gaming.py" "$tree/usr/bin/nova-gaming"
 install -Dm0755 "$ROOT/apps/nova-metrics.py" "$tree/usr/lib/novaos/nova-metrics.py"
 install -Dm0755 "$ROOT/scripts/benchmark-guest.py" "$tree/usr/bin/nova-benchmark"
 for entry in "$ROOT/apps/"*.desktop; do

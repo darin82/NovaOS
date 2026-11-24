@@ -1,5 +1,11 @@
 # NovaOS progress
 
+## Phase 5 · Gaming
+
+- Added the native Gaming Hub, local Steam discovery, editable game records, artwork and history where available, per-game boost and overlay controls, and optional setup and capture paths. Heavy gaming packages remain outside the ISO manifest.
+- Local Steam fixture, launch argument, profile restoration, source, desktop, and workflow checks passed. Trixie's main archive did not list a native Gamescope package. The optional Flatpak extension is available separately.
+- Pending Linux guest verification of launcher and QML behavior, Steam and Wine processes, Flatpak runtime extension branches, real hardware and overlay shortcuts, and recording. See [gaming and compatibility](docs/GAMING.md).
+
 ## Phase 4 · Performance
 
 - Configured bounded ZRAM swap and size-ranked installed package reports. Moved the dedicated 7-Zip CLI out of the direct package list and retained Ark's libarchive backend.

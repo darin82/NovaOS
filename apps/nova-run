@@ -2,18 +2,24 @@
 set -eu
 
 kind=app
+profile=
+if [ "${1:-}" = --profile ]; then
+    profile=${2:-}
+    case "$profile" in balanced|turbo|gaming|eco|ultra-lite) ;; *) exit 2 ;; esac
+    shift 2
+fi
 case "${1:-}" in
     --game|--background|--maintenance)
         kind=${1#--}
         shift ;;
 esac
 if [ "${1:-}" != -- ] || [ "$#" -lt 2 ]; then
-    echo 'Usage: nova-run [--game|--background|--maintenance] -- COMMAND [ARG...]' >&2
+    echo 'Usage: nova-run [--profile PROFILE] [--game|--background|--maintenance] -- COMMAND [ARG...]' >&2
     exit 2
 fi
 shift
 
-profile=$(nova-profile get)
+profile=${profile:-$(nova-profile get)}
 if [ "$kind" = maintenance ]; then
     # Check scopes, rather than PIDs, so a game launcher may fork and exit.
     active=$(systemctl --user list-units --type=scope --state=active --no-legend --no-pager 'nova-game-*.scope')
@@ -26,13 +32,15 @@ fi
 weight=100
 niceness=0
 scope=workload
+if [ "$kind" = game ]; then
+    scope=game
+fi
 power=
 case "$profile" in
     balanced) ;;
     turbo) weight=250; power=performance ;;
     gaming)
         if [ "$kind" = game ]; then
-            scope=game
             weight=800
             if command -v gamemoderun >/dev/null 2>&1; then
                 set -- gamemoderun "$@"

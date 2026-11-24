@@ -69,6 +69,10 @@ for asset in \
     usr/bin/nova-appearance \
     usr/bin/nova-update \
     usr/bin/nova-benchmark \
+    usr/bin/nova-gaming \
+    usr/share/novaos/mangohud.conf \
+    usr/lib/novaos/Gaming.qml \
+    usr/share/applications/org.novaos.Gaming.desktop \
     usr/lib/novaos/Performance.qml \
     usr/lib/novaos/nova-metrics.py \
     etc/systemd/zram-generator.conf.d/50-novaos.conf \

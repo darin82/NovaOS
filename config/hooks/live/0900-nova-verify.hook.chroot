@@ -10,7 +10,7 @@ test -r /usr/share/desktop-base/nova-logo.svg
 test -r /usr/lib/x86_64-linux-gnu/qt6/plugins/kf6/kio/kio_filenamesearch.so
 
 for executable in flatpak nmcli wpctl kdialog Xorg plasma-apply-colorscheme \
-    kreadconfig6 kwriteconfig6 qdbus6 nova-appearance nova-update apt-get apt-cache qml6 powerprofilesctl; do
+    kreadconfig6 kwriteconfig6 qdbus6 nova-appearance nova-update nova-gaming apt-get apt-cache qml6 powerprofilesctl; do
     command -v "$executable" >/dev/null
 done
 test -x /usr/lib/systemd/system-generators/zram-generator

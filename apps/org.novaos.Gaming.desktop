@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=Nova Gaming Hub
+Comment=Manage your installed games and optional gaming tools
+Exec=env QT_QUICK_CONTROLS_STYLE=org.kde.desktop qml6 /usr/lib/novaos/Gaming.qml
+Icon=input-gaming-symbolic
+Categories=Game;System;

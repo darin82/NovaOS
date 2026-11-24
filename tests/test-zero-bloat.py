@@ -92,6 +92,10 @@ class Profiles(unittest.TestCase):
             resumed = shell("nova-run", "--maintenance", "--", "test-task")
             self.assertEqual(resumed.returncode, 0, resumed.stderr)
             self.assertIn("CPUWeight=5", resumed.stdout)
+            override = shell("nova-run", "--profile", "gaming", "--game", "--", "test-game")
+            self.assertEqual(override.returncode, 0, override.stderr)
+            self.assertIn("CPUWeight=800", override.stdout)
+            self.assertIn("gamemoderun", override.stdout)
 
             appearance_log = work / "appearance.log"
             session = dict(XDG_SESSION_TYPE="wayland", DBUS_SESSION_BUS_ADDRESS="fixture",
