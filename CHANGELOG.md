@@ -2,6 +2,8 @@
 
 ## 0.1.0 Alpha · first release target
 
+- Prepared the first Alpha release artifact, signed APT preflight, build summary, checksums, package license notices, and disposable-VM release checklist.
+
 - Refined the wallpaper and shared native controls, branded boot and sign-in, and fixed the Minimal profile Music launcher.
 
 - Added Nova Installer, first-boot Welcome, Recovery tools and update notifications.

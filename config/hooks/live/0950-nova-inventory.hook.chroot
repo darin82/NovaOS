@@ -10,6 +10,23 @@ install -d -m 0755 "$report"
         | awk -F '\t' '$1 == "installed" {sub(/^[^\t]*\t/, ""); print}'
 } > "$report/installed-packages.tsv"
 
+# Preserve Debian's per-package notices, including paths shared by symlink.
+printf 'package\tnotice_path\n' > "$report/license-notice-index.tsv"
+printf '%s\n' usr/share/common-licenses > "$report/license-paths.tmp"
+awk -F '\t' 'NR>1 {sub(/:.*/, "", $1); print $1}' "$report/installed-packages.tsv" | sort -u |
+while IFS= read -r package; do
+    path="usr/share/doc/$package/copyright"
+    if [ -f "/$path" ]; then
+        printf '%s\n' "$path" >> "$report/license-paths.tmp"
+        printf '%s\t%s\n' "$package" "$path"
+    else
+        printf '%s\t%s\n' "$package" 'not present in image'
+    fi
+done >> "$report/license-notice-index.tsv"
+tar --dereference -C / --files-from="$report/license-paths.tmp" \
+    -czf "$report/package-license-notices.tar.gz"
+rm "$report/license-paths.tmp"
+
 {
     printf 'scope\tunit\tstate\tcommand_or_target\n'
     for scope in system user; do

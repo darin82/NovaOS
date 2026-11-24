@@ -10,13 +10,13 @@ The default desktop includes Firefox ESR, Konsole, and Dolphin. **Nova Performan
 
 1. Push this repository to a GitHub repository with Actions enabled.
 2. Open **Actions → NovaOS ISO → Run workflow**. A tag matching `v0.1.0-alpha` also triggers the build.
-3. Download **novaos-amd64** from the successful run. It contains the ISO, checksums, package manifests, background-service report, build-worker performance benchmark, and build-tool inventory. On failure, download **novaos-build-log**.
+3. Download **novaos-amd64** from the successful run. It contains `NovaOS-0.1.0-alpha-amd64.iso`, checksums, package and service inventories, a build summary, known issues, and license notices. On failure, download **novaos-build-log**.
 
 The ISO job builds in a fresh Debian 13 container on a disposable Linux runner. The job uses a privileged container to let live-build mount its chroot and create the boot image. Windows needs no WSL, Docker, or administrator access for this workflow.
 
 ## Boot and verify
 
-Follow the [VirtualBox test guide](docs/VIRTUALBOX.md) to verify the download and boot a separate diskless VM. Open [PROGRESS.md](PROGRESS.md) for current verification status.
+Follow the [release runbook](docs/RELEASE.md) and [VirtualBox test guide](docs/VIRTUALBOX.md) to verify the download, boot a diskless VM, and install in a separate disposable VM. Open [PROGRESS.md](PROGRESS.md) for the current Alpha verification status.
 
 ## Source layout
 

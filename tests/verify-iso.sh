@@ -117,9 +117,12 @@ do
     unsquashfs -cat "$WORK/filesystem.squashfs" "$asset" > "$WORK/guest-file"
     test -s "$WORK/guest-file"
 done
-for report in installed-packages.tsv background-services.tsv; do
+for report in installed-packages.tsv background-services.tsv license-notice-index.tsv package-license-notices.tar.gz; do
     unsquashfs -cat "$WORK/filesystem.squashfs" "usr/lib/novaos/reports/$report" > "$REPORTS/$report"
+    test -s "$REPORTS/$report"
 done
+tar -tzf "$REPORTS/package-license-notices.tar.gz" > "$WORK/license-members"
+grep -Fxq 'usr/share/doc/base-files/copyright' "$WORK/license-members"
 cp "$MANIFEST" "$REPORTS/live.packages"
 python3 "$ROOT/scripts/audit-image.py" "$ROOT" "$REPORTS"
 python3 "$ROOT/scripts/benchmark-release.py" "$ISO" "$WORK/filesystem.squashfs" "$REPORTS/performance-benchmark.json"

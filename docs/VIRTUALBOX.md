@@ -7,7 +7,7 @@ Use a new **NovaOS Alpha Test** VM. If you already have a NovaOS VM with data, k
 In PowerShell, from the extracted artifact directory, compare:
 
 ```powershell
-Get-FileHash -Algorithm SHA256 .\novaos-0.1.0-alpha-amd64.iso
+Get-FileHash -Algorithm SHA256 .\NovaOS-0.1.0-alpha-amd64.iso
 Get-Content .\SHA256SUMS
 ```
 

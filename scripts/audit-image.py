@@ -11,6 +11,17 @@ def rules(path):
     ]
 
 
+def audit_apt_plan(root, plan):
+    prohibited = rules(root / "packages/exclusions.regex")
+    packages = {
+        line.split()[1].split(":", 1)[0] for line in plan.read_text(encoding="utf-8").splitlines()
+        if line.startswith("Inst ")
+    }
+    rejected = sorted(package for package in packages if any(rule.search(package) for rule in prohibited))
+    if rejected:
+        raise SystemExit("APT preflight would install excluded packages: " + ", ".join(rejected))
+
+
 def main(root, reports):
     selected = {
         name for source in (root / "packages").glob("*.list.chroot")
@@ -66,4 +77,7 @@ def main(root, reports):
 
 
 if __name__ == "__main__":
-    main(Path(sys.argv[1]), Path(sys.argv[2]))
+    if sys.argv[1] == "--apt-plan":
+        audit_apt_plan(Path(sys.argv[2]), Path(sys.argv[3]))
+    else:
+        main(Path(sys.argv[1]), Path(sys.argv[2]))

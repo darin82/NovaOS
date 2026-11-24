@@ -2,6 +2,7 @@
 
 | Severity | Reproduction | Resolution |
 | --- | --- | --- |
+| Critical release gate | Run the manual ISO build, verify the artifact, then boot and install on a disposable VM. | Pending. The repository has no configured GitHub remote and no accessible Linux build guest. No boot or install failure has been observed. |
 | High | Choose Minimal with media unchecked, boot the target and open Kickoff. The Music launcher could remain after the playback packages were removed. | Fixed in installer target cleanup. Source regression check passes. Guest retest pending. |
 | High | Test an encrypted installation with the branded boot splash and wait for the unlock prompt. | Reused Plymouth's original two-step passphrase assets and callbacks. Encrypted boot remains unverified. |
 | High | Build the image, open Calamares, cancel before confirmation, then install to a disposable disk and boot without the ISO. | Pending the first verified Linux build and VirtualBox install. |

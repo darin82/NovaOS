@@ -17,3 +17,5 @@ APT security updates remain enabled. Nova Store adds the per-user Flathub remote
 - The VirtualBox test confirms the graphical boot and exercises the runtime services.
 
 The workflow streams live-build diagnostics to an uploaded log. The build entry point requires root inside Debian 13 and keeps its temporary build directory for diagnosis until the disposable container exits. For reruns use a fresh Action job. On the Windows host use only the source checks available locally and the optional ISO checksum verification.
+
+The runner resolves the selected packages with signed Debian APT before calling live-build. Publication uses the case-sensitive release name `NovaOS-0.1.0-alpha-amd64.iso`, checks every shipped file against `SHA256SUMS`, and includes package license notices and known issues. See the [release runbook](RELEASE.md).

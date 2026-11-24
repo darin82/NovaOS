@@ -1,5 +1,11 @@
 # NovaOS progress
 
+## Phase 10 · First bootable release
+
+- Prepared the manual Alpha workflow to produce `NovaOS-0.1.0-alpha-amd64.iso`, checksums, build summary, known issues, manifests, and Debian license notices after signed APT preflight and ISO inspection.
+- Local fixture suites and workflow lint passed. Verified 29 live-build option names against Debian's implementation, parsed all eight Calamares YAML files, and checked executable modes and direct package availability. Signed dependency resolution and ISO inspection require the Linux run.
+- Build and runtime gates remain pending. The repository has no remote or GitHub CLI credentials. The existing VirtualBox VM is paused with no ISO or forwarded SSH endpoint. It was left untouched.
+
 ## Phase 9 · Polish
 
 - Added shared QML design components, revised the original wallpaper, and integrated Nova branding across SDDM, lock-screen wallpaper, Plymouth and Calamares.

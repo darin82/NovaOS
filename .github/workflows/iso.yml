@@ -23,6 +23,7 @@ jobs:
       - run: python3 tests/test-music-store.py
       - run: python3 tests/test-ai.py
       - run: python3 tests/test-installer.py
+      - run: python3 tests/test-release.py
       - run: python3 scripts/benchmark-guest.py --help
       - run: python3 -m py_compile apps/nova-metrics.py scripts/benchmark-guest.py
       - run: node tests/test-desktop.mjs
@@ -42,6 +43,7 @@ jobs:
           mkdir -p dist
           docker run --rm --privileged \
             --env GITHUB_REF_NAME --env GITHUB_REF_TYPE \
+            --env GITHUB_SHA --env GITHUB_SERVER_URL --env GITHUB_REPOSITORY --env GITHUB_RUN_ID \
             --mount "type=bind,src=$PWD,dst=/src,readonly" \
             --mount "type=bind,src=$PWD/dist,dst=/src/dist" \
             novaos-build sh scripts/build-iso.sh 2>&1 | tee dist/build.log

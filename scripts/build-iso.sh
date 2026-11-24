@@ -1,18 +1,24 @@
 #!/bin/sh
 set -eu
 umask 022
+export LC_ALL=C
 
 ROOT=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
 . "$ROOT/build/settings.env"
 VERSION=$(cat "$ROOT/VERSION")
 IMAGE="novaos-$VERSION-alpha"
 ARTIFACT="$IMAGE-$ARCH"
+ISO_NAME="NovaOS-$VERSION-alpha-$ARCH.iso"
 PHASE=preflight
+STAGING=
 
 on_exit() {
     status=$?
     if [ "$status" -ne 0 ]; then
         printf 'NovaOS build failed during %s (exit %s).\n' "$PHASE" "$status" >&2
+    fi
+    if [ -n "$STAGING" ]; then
+        rm -rf -- "$STAGING"
     fi
 }
 trap on_exit EXIT
@@ -27,7 +33,7 @@ if [ ! -r /etc/debian_version ] || ! grep -Eq '^13([.]|$)' /etc/debian_version; 
     exit 1
 fi
 
-for tool in lb debootstrap xorriso grub-script-check unsquashfs python3 sha256sum rsvg-convert; do
+for tool in lb debootstrap xorriso grub-script-check unsquashfs python3 sha256sum rsvg-convert apt-get; do
     command -v "$tool" >/dev/null || { echo "Missing tool: $tool" >&2; exit 1; }
 done
 python3 "$ROOT/tests/validate-source.py"
@@ -41,6 +47,30 @@ fi
 BUILD_DIR=$(mktemp -d "${TMPDIR:-/tmp}/novaos.XXXXXXXX")
 printf 'Build directory: %s\n' "$BUILD_DIR"
 cd "$BUILD_DIR"
+
+PHASE='Debian package preflight'
+# Keep dependency checks on this image's signed suites, separate from worker lists.
+mkdir -p preflight/lists/partial
+chmod 0755 "$BUILD_DIR" preflight preflight/lists
+cat > preflight/sources.list <<EOF
+deb $MIRROR $SUITE $ARCHIVE_AREAS
+deb $MIRROR $SUITE-updates $ARCHIVE_AREAS
+deb $SECURITY_MIRROR $SUITE-security $ARCHIVE_AREAS
+EOF
+apt_preflight() {
+    apt-get -o "Dir::Etc::sourcelist=$BUILD_DIR/preflight/sources.list" \
+        -o Dir::Etc::sourceparts=- -o "Dir::State::lists=$BUILD_DIR/preflight/lists" \
+        -o Acquire::AllowInsecureRepositories=false -o APT::Get::AllowUnauthenticated=false "$@"
+}
+apt_preflight -q -o APT::Update::Error-Mode=any update
+set -- $(cat "$ROOT/packages/"*.list.chroot)
+if ! apt_preflight --simulate --no-install-recommends --no-remove install "$@" linux-image-amd64 \
+    > preflight/resolution.log 2>&1; then
+    cat preflight/resolution.log >&2
+    exit 1
+fi
+python3 "$ROOT/scripts/audit-image.py" --apt-plan "$ROOT" preflight/resolution.log
+printf 'Debian APT preflight resolved %s requested image packages plus the kernel.\n' "$#"
 
 PHASE=configuration
 BOOT="boot=live components live-config.nocomponents=sddm hostname=novaos username=$LIVE_USER quiet splash"
@@ -215,13 +245,26 @@ if [ -e "$DEST" ]; then
     echo "Artifacts already exist at $DEST; use a fresh checkout for another build." >&2
     exit 1
 fi
-mkdir -p "$DEST"
-install -m0644 "$ARTIFACT.hybrid.iso" "$DEST/$ARTIFACT.iso"
-install -m0644 "$ARTIFACT.packages" "$DEST/$ARTIFACT.packages"
+mkdir -p "$ROOT/dist"
+STAGING=$(mktemp -d "$ROOT/dist/.novaos-release.XXXXXXXX")
+install -m0644 "$ARTIFACT.hybrid.iso" "$STAGING/$ISO_NAME"
+install -m0644 "$ARTIFACT.packages" "$STAGING/$ARTIFACT.packages"
 install -m0644 reports/installed-packages.tsv reports/background-services.tsv \
-    reports/package-sizes.tsv reports/performance-benchmark.json "$DEST/"
-dpkg-query -W -f='${Package} \t${Version}\n' live-build debootstrap xorriso > "$DEST/build-tools.tsv"
-cd "$DEST"
-sha256sum "$ARTIFACT.iso" "$ARTIFACT.packages" build-tools.tsv \
-    installed-packages.tsv background-services.tsv package-sizes.tsv performance-benchmark.json > SHA256SUMS
+    reports/package-sizes.tsv reports/performance-benchmark.json \
+    reports/package-license-notices.tar.gz reports/license-notice-index.tsv "$STAGING/"
+install -m0644 "$ROOT/BUGS.md" "$STAGING/KNOWN-ISSUES.md"
+install -m0644 "$ROOT/docs/LICENSE-NOTICES.md" "$STAGING/LICENSE-NOTICES.md"
+dpkg-query -W -f='${Package}\t${Version}\n' live-build debootstrap xorriso > "$STAGING/build-tools.tsv"
+python3 "$ROOT/scripts/release-summary.py" "$STAGING" "$ISO_NAME" "$VERSION" "$SUITE" "$ARCH"
+(
+    cd "$STAGING"
+    sha256sum "$ISO_NAME" "$ARTIFACT.packages" build-tools.tsv installed-packages.tsv \
+        background-services.tsv package-sizes.tsv performance-benchmark.json \
+        package-license-notices.tar.gz license-notice-index.tsv KNOWN-ISSUES.md \
+        LICENSE-NOTICES.md BUILD-SUMMARY.md > SHA256SUMS
+    sha256sum --check SHA256SUMS
+)
+chmod 0755 "$STAGING"
+mv -T -- "$STAGING" "$DEST"
+STAGING=
 printf 'Verified artifacts: %s\n' "$DEST"

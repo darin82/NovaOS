@@ -10,6 +10,8 @@
 
 No runtime results have been collected. The GitHub runner report measures the build worker and image size. It cannot substitute for a NovaOS guest run.
 
+The 0.1.0 Alpha release gate still has no built image or guest measurements. Record the exact ISO size from `BUILD-SUMMARY.md` after compilation and the idle, boot, storage, and process metrics from the disposable guest. Windows-side fixture tests provide no runtime baseline.
+
 ## Repeatable comparison
 
 Build the Phase 3 baseline from `0c060d3` and Phase 4 from the current branch. Boot each ISO with the same VirtualBox hardware and close foreground apps. Wait for the desktop to settle, then run the current benchmark script from Konsole in each guest.
