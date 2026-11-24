@@ -4,6 +4,8 @@
 
 The source repository, GitHub Actions workflow, desktop branding, package lists, and VirtualBox procedure are implemented. The image targets live boot only on amd64.
 
+The Zero Bloat update keeps 46 direct packages, adds the package and startup gates and report collection, and provides Nova Performance and Nova Store. The local audit and profile fixture tests pass. The Linux release artifacts, startup state, application installs, profile effects, and non-indexed Dolphin search still require a real ISO and guest run.
+
 | Check | Status |
 | --- | --- |
 | Source and package validation | Passed on Windows using portable Python, POSIX shell syntax checks, Node, and actionlint. Explicit packages checked against the Debian amd64 archive indexes. |

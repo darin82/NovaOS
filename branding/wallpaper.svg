@@ -2,9 +2,9 @@
   <title>NovaOS Midnight Horizon</title>
   <defs>
     <linearGradient id="sky" x2="1" y2="1">
-      <stop stop-color="#060911"/>
-      <stop offset=".56" stop-color="#101733"/>
-      <stop offset="1" stop-color="#0a0b19"/>
+      <stop stop-color="#070609"/>
+      <stop offset=".56" stop-color="#161024"/>
+      <stop offset="1" stop-color="#0d0914"/>
     </linearGradient>
     <radialGradient id="halo">
       <stop stop-color="#6c4af4" stop-opacity=".54"/>
@@ -12,13 +12,13 @@
     </radialGradient>
     <linearGradient id="horizon" x2="1" y2="0">
       <stop stop-color="#0b1633" stop-opacity="0"/>
-      <stop offset=".32" stop-color="#4c8fff"/>
-      <stop offset=".72" stop-color="#a978ff"/>
+      <stop offset=".32" stop-color="#8652fa"/>
+      <stop offset=".72" stop-color="#f6eeff"/>
       <stop offset="1" stop-color="#492bb4" stop-opacity="0"/>
     </linearGradient>
     <linearGradient id="planet" x2="0" y2="1">
-      <stop stop-color="#151d3f"/>
-      <stop offset=".35" stop-color="#090c1b"/>
+      <stop stop-color="#241637"/>
+      <stop offset=".35" stop-color="#0c0912"/>
     </linearGradient>
   </defs>
   <path fill="url(#sky)" d="M0 0h1920v1080H0z"/>

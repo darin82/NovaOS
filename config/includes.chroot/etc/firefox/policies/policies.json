@@ -1,0 +1,14 @@
+{
+    "policies": {
+        "DisableFirefoxStudies": true,
+        "DisableTelemetry": true,
+        "FirefoxHome": {
+            "Stories": false,
+            "SponsoredStories": false,
+            "Highlights": false,
+            "SponsoredTopSites": false,
+            "TopSites": false,
+            "Locked": true
+        }
+    }
+}

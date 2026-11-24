@@ -79,6 +79,15 @@ sed -n '/^\[Colors:/,$p' "$ROOT/desktop/NovaMidnight.colors" >> "$tree/etc/xdg/k
 install -Dm0644 "$ROOT/desktop/nova-layout.js" \
     "$tree/usr/share/plasma/shells/org.kde.plasma.desktop/contents/updates/10-nova-layout.js"
 install -Dm0644 "$ROOT/apps/mimeapps.list" "$tree/etc/xdg/mimeapps.list"
+install -Dm0644 "$ROOT/desktop/baloofilerc" "$tree/etc/xdg/baloofilerc"
+install -d -m 0755 "$tree/etc/systemd/user"
+ln -s /dev/null "$tree/etc/systemd/user/kde-baloo.service"
+for app in nova-profile nova-run nova-store; do
+    install -Dm0755 "$ROOT/apps/$app" "$tree/usr/bin/$app"
+done
+for entry in "$ROOT/apps/"*.desktop; do
+    install -Dm0644 "$entry" "$tree/usr/share/applications/$(basename "$entry")"
+done
 install -d -m0755 "$tree/usr/lib/novaos"
 cat > "$tree/usr/lib/novaos/os-release" <<EOF
 NAME="NovaOS"
@@ -97,7 +106,8 @@ PHASE=live-build
 lb build
 
 PHASE='ISO verification'
-sh "$ROOT/tests/verify-iso.sh" "$ARTIFACT.hybrid.iso" "$ARTIFACT.packages" "$VERSION"
+mkdir reports
+sh "$ROOT/tests/verify-iso.sh" "$ARTIFACT.hybrid.iso" "$ARTIFACT.packages" "$VERSION" "$BUILD_DIR/reports"
 
 PHASE='artifact collection'
 DEST="$ROOT/dist/$ARTIFACT"
@@ -108,7 +118,10 @@ fi
 mkdir -p "$DEST"
 install -m0644 "$ARTIFACT.hybrid.iso" "$DEST/$ARTIFACT.iso"
 install -m0644 "$ARTIFACT.packages" "$DEST/$ARTIFACT.packages"
+install -m0644 reports/installed-packages.tsv reports/background-services.tsv \
+    reports/performance-benchmark.json "$DEST/"
 dpkg-query -W -f='${Package} \t${Version}\n' live-build debootstrap xorriso > "$DEST/build-tools.tsv"
 cd "$DEST"
-sha256sum "$ARTIFACT.iso" "$ARTIFACT.packages" build-tools.tsv > SHA256SUMS
+sha256sum "$ARTIFACT.iso" "$ARTIFACT.packages" build-tools.tsv \
+    installed-packages.tsv background-services.tsv performance-benchmark.json > SHA256SUMS
 printf 'Verified artifacts: %s\n' "$DEST"

@@ -48,9 +48,20 @@ def main():
     required = {
         "live-boot", "live-config-systemd", "user-setup", "systemd-sysv", "plasma-desktop",
         "kwin-wayland", "sddm", "firefox-esr", "konsole", "dolphin", "flatpak",
-        "network-manager", "pipewire-audio", "wireplumber",
+        "network-manager", "pipewire-audio", "wireplumber", "kdialog", "kio-extras",
     }
     require(required <= packages, f"Missing packages: {sorted(required - packages)}")
+    for name in ("packages/exclusions.regex", "config/startup-exclusions.regex"):
+        for line in read(name).splitlines():
+            if line and not line.startswith("#"):
+                rule = re.compile(line)
+                if name.startswith("packages/"):
+                    require(not any(rule.search(package) for package in packages),
+                            f"An explicitly selected package violates {line}")
+    require(not ini("desktop/baloofilerc")["Basic Settings"].getboolean("Indexing-Enabled"),
+            "File indexing must be disabled by default")
+    browser = json.loads(read("config/includes.chroot/etc/firefox/policies/policies.json"))["policies"]
+    require(not browser["FirefoxHome"]["SponsoredStories"], "Sponsored news must stay disabled")
 
     for asset in ("branding/novaos.svg", "branding/wallpaper.svg"):
         svg = ET.fromstring(read(asset))
@@ -81,7 +92,11 @@ def main():
         "scripts/build-iso.sh",
         "tests/verify-iso.sh",
         "config/hooks/live/0900-nova-verify.hook.chroot",
+        "config/hooks/live/0950-nova-inventory.hook.chroot",
         "config/includes.chroot/usr/lib/live/config/0086-nova-sddm",
+        "apps/nova-profile",
+        "apps/nova-run",
+        "apps/nova-store",
     ]
     shell = shutil.which("sh")
     for path in shell_files:

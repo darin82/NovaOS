@@ -5,6 +5,7 @@ ROOT=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
 ISO=$(realpath "$1")
 MANIFEST=$(realpath "$2")
 VERSION=$3
+REPORTS=$4
 WORK=$(mktemp -d)
 trap 'rm -rf -- "$WORK"' EXIT
 
@@ -64,4 +65,10 @@ do
     unsquashfs -cat "$WORK/filesystem.squashfs" "$asset" > "$WORK/guest-file"
     test -s "$WORK/guest-file"
 done
+for report in installed-packages.tsv background-services.tsv; do
+    unsquashfs -cat "$WORK/filesystem.squashfs" "usr/lib/novaos/reports/$report" > "$REPORTS/$report"
+done
+cp "$MANIFEST" "$REPORTS/live.packages"
+python3 "$ROOT/scripts/audit-image.py" "$ROOT" "$REPORTS"
+python3 "$ROOT/scripts/benchmark-release.py" "$ISO" "$WORK/filesystem.squashfs" "$REPORTS/performance-benchmark.json"
 printf 'ISO structure, boot entries, APT security source and package inventory verified.\n'

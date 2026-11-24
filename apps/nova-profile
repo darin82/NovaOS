@@ -1,0 +1,56 @@
+#!/bin/sh
+set -eu
+umask 077
+
+config="${XDG_CONFIG_HOME:-$HOME/.config}/novaos"
+state="$config/performance-profile"
+
+label() {
+    case "$1" in
+        balanced) printf '%s\n' Balanced ;;
+        turbo) printf '%s\n' 'Nova Turbo' ;;
+        gaming) printf '%s\n' 'Nova Gaming' ;;
+        eco) printf '%s\n' 'Nova Eco' ;;
+        ultra-lite) printf '%s\n' 'Nova Ultra Lite' ;;
+        *) return 1 ;;
+    esac
+}
+
+profile=balanced
+if [ -f "$state" ]; then
+    IFS= read -r profile < "$state" || profile=balanced
+    label "$profile" >/dev/null || profile=balanced
+fi
+
+case "${1:-get}" in
+    get)
+        printf '%s\n' "$profile"
+        ;;
+    set)
+        [ "$#" -eq 2 ] && label "$2" >/dev/null || {
+            echo 'Choose balanced, turbo, gaming, eco or ultra-lite.' >&2
+            exit 2
+        }
+        mkdir -p "$config"
+        temp=$(mktemp "$config/.performance-profile.XXXXXXXX")
+        trap 'rm -f -- "$temp"' EXIT
+        printf '%s\n' "$2" > "$temp"
+        mv -f -- "$temp" "$state"
+        ;;
+    choose)
+        set --
+        for choice in balanced turbo gaming eco ultra-lite; do
+            selected=off
+            if [ "$choice" = "$profile" ]; then
+                selected=on
+            fi
+            set -- "$@" "$choice" "$(label "$choice")" "$selected"
+        done
+        choice=$(kdialog --title 'Nova Performance' --radiolist 'Profile for Nova launches' "$@") || exit 0
+        exec "$0" set "$choice"
+        ;;
+    *)
+        echo 'Usage: nova-profile [get|set PROFILE|choose]' >&2
+        exit 2
+        ;;
+esac

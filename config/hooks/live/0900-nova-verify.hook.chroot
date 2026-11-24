@@ -7,9 +7,19 @@ test -x /usr/lib/live/config/0086-nova-sddm
 test -r /usr/share/color-schemes/NovaMidnight.colors
 test -r /usr/share/wallpapers/NovaOS/contents/images/1920x1080.svg
 test -r /usr/share/desktop-base/nova-logo.svg
+test -r /usr/lib/x86_64-linux-gnu/qt6/plugins/kf6/kio/kio_filenamesearch.so
 
-for executable in firefox-esr konsole dolphin flatpak nmcli wpctl; do
+for executable in firefox-esr konsole dolphin flatpak nmcli wpctl kdialog Xorg; do
     command -v "$executable" >/dev/null
+done
+
+# Local desktop entries retain upstream IDs and actions and route menu launches
+# through the selected workload profile. D-Bus activation bypasses Exec.
+install -d -m 0755 /usr/local/share/applications
+for entry in firefox-esr.desktop org.kde.dolphin.desktop org.kde.konsole.desktop; do
+    sed -e 's/^Exec=/Exec=nova-run -- /' -e 's/^DBusActivatable=true$/DBusActivatable=false/' \
+        "/usr/share/applications/$entry" > "/usr/local/share/applications/$entry"
+    grep -q '^Exec=nova-run -- ' "/usr/local/share/applications/$entry"
 done
 
 # Enable network management and make the display manager the boot target.

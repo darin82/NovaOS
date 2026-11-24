@@ -22,4 +22,13 @@ for (const panel of panels()) {
         launcher.currentConfigGroup = ["General"];
         launcher.writeConfig("icon", "novaos");
     }
+
+    for (const tasks of panel.widgets("org.kde.plasma.icontasks")) {
+        tasks.currentConfigGroup = ["General"];
+        tasks.writeConfig("launchers", [
+            "applications:firefox-esr.desktop",
+            "applications:org.kde.dolphin.desktop",
+            "applications:org.kde.konsole.desktop"
+        ]);
+    }
 }

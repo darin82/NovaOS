@@ -1,0 +1,50 @@
+#!/bin/sh
+set -eu
+export LC_ALL=C
+
+report=/usr/lib/novaos/reports
+install -d -m 0755 "$report"
+{
+    printf 'package\tversion\tsource\tsection\tinstalled_kib\n'
+    dpkg-query -W -f='${db:Status-Status}\t${binary:Package}\t${Version}\t${source:Package}\t${Section}\t${Installed-Size}\n' \
+        | awk -F '\t' '$1 == "installed" {sub(/^[^\t]*\t/, ""); print}'
+} > "$report/installed-packages.tsv"
+
+{
+    printf 'scope\tunit\tstate\tcommand_or_target\n'
+    for scope in system user; do
+        options=
+        if [ "$scope" = user ]; then
+            options=--global
+        fi
+        systemctl $options --root=/ list-unit-files --no-pager --no-legend > "$report/units.tmp"
+        awk -v scope="$scope" 'NF >= 2 {printf "%s\t%s\t%s\t\n", scope, $1, $2}' "$report/units.tmp"
+    done
+    rm "$report/units.tmp"
+
+    # Static dependencies installed as wants/requires can start units without enablement.
+    for scope in system user; do
+        for directory in /etc/systemd/"$scope" /usr/lib/systemd/"$scope"; do
+            [ -d "$directory" ] || continue
+            for link in "$directory"/*.wants/* "$directory"/*.requires/*; do
+                [ -L "$link" ] || continue
+                name=${link##*/}
+                state=wanted
+                if [ "$(readlink "/etc/systemd/$scope/$name" 2>/dev/null || true)" = /dev/null ]; then
+                    state=masked
+                fi
+                printf '%s\t%s\t%s\t%s\n' "$scope" "$name" "$state" "${link%/*}"
+            done
+        done
+    done
+
+    for entry in /etc/xdg/autostart/*.desktop /usr/share/autostart/*.desktop; do
+        [ -f "$entry" ] || continue
+        state=xdg-autostart
+        if grep -Eiq '^Hidden=true[[:space:]]*$' "$entry"; then
+            state=hidden
+        fi
+        command=$(sed -n 's/^Exec=//p' "$entry" | head -n 1 | tr '\t' ' ')
+        printf 'desktop\t%s\t%s\t%s\n' "${entry##*/}" "$state" "$command"
+    done
+} > "$report/background-services.tsv"

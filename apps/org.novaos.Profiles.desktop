@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=Nova Performance
+Comment=Choose a workload profile
+Exec=nova-profile choose
+Icon=preferences-system-performance
+Categories=Settings;System;

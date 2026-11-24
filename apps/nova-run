@@ -1,0 +1,48 @@
+#!/bin/sh
+set -eu
+
+kind=app
+case "${1:-}" in
+    --game|--background|--maintenance)
+        kind=${1#--}
+        shift ;;
+esac
+if [ "${1:-}" != -- ] || [ "$#" -lt 2 ]; then
+    echo 'Usage: nova-run [--game|--background|--maintenance] -- COMMAND [ARG...]' >&2
+    exit 2
+fi
+shift
+
+profile=$(nova-profile get)
+if [ "$kind" = maintenance ]; then
+    # Check scopes, rather than PIDs, so a game launcher may fork and exit.
+    active=$(systemctl --user list-units --type=scope --state=active --no-legend --no-pager 'nova-game-*.scope')
+    if [ -n "$active" ]; then
+        echo 'Optional maintenance deferred while a Nova Gaming game is running.' >&2
+        exit 75
+    fi
+fi
+
+weight=100
+niceness=0
+scope=workload
+case "$profile" in
+    balanced) ;;
+    turbo) weight=250 ;;
+    gaming)
+        if [ "$kind" = game ]; then
+            scope=game
+            weight=800
+        fi
+        ;;
+    eco) weight=60; niceness=5 ;;
+    ultra-lite) weight=25; niceness=12 ;;
+esac
+
+case "$kind" in
+    background|maintenance) weight=15; niceness=10 ;;
+esac
+
+exec systemd-run --user --scope --quiet --slice=app.slice \
+    --unit="nova-$scope-$$.scope" --property="CPUWeight=$weight" \
+    -- nice -n "$niceness" "$@"

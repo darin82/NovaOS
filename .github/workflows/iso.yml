@@ -17,6 +17,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: python3 tests/validate-source.py
+      - run: python3 tests/test-zero-bloat.py
       - run: node --check desktop/nova-layout.js
 
   iso:

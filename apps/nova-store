@@ -1,0 +1,27 @@
+#!/bin/sh
+set -eu
+
+app=org.libreoffice.LibreOffice
+remote=https://dl.flathub.org/repo/flathub.flatpakrepo
+
+case "${1:-choose}" in
+    choose)
+        if flatpak info --user "$app" >/dev/null 2>&1; then
+            action=$(kdialog --title 'Nova Store' --menu 'LibreOffice' remove 'Remove LibreOffice') || exit 0
+        else
+            action=$(kdialog --title 'Nova Store' --menu 'LibreOffice' install 'Install LibreOffice from Flathub') || exit 0
+        fi
+        exec konsole --hold -e /usr/bin/nova-store "$action"
+        ;;
+    install)
+        flatpak remote-add --user --if-not-exists --from flathub "$remote"
+        exec flatpak install --user flathub "$app"
+        ;;
+    remove)
+        exec flatpak uninstall --user "$app"
+        ;;
+    *)
+        echo 'Usage: nova-store [install|remove]' >&2
+        exit 2
+        ;;
+esac

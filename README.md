@@ -4,11 +4,13 @@ NovaOS 0.1.0 Alpha is the first live-media release target for a Debian 13 (Trixi
 
 The live image targets BIOS and UEFI with Secure Boot disabled. It runs from virtual optical media. This alpha has no disk installer and live-session changes are temporary.
 
+The default desktop includes Firefox ESR, Konsole, and Dolphin. **Nova Performance** selects one of five workload profiles. **Nova Store** offers LibreOffice as an optional per-user Flatpak. See the [architecture requirements](docs/ARCHITECTURE.md) for package policy, startup rules, and profile behavior.
+
 ## Build on GitHub
 
 1. Push this repository to a GitHub repository with Actions enabled.
 2. Open **Actions → NovaOS ISO → Run workflow**. A tag matching `v0.1.0-alpha` also triggers the build.
-3. Download **novaos-amd64** from the successful run and extract the ISO, checksum file, package manifest, and build-tool inventory. On failure, download **novaos-build-log**.
+3. Download **novaos-amd64** from the successful run. It contains the ISO, checksums, package manifests, background-service report, build-worker performance benchmark, and build-tool inventory. On failure, download **novaos-build-log**.
 
 The ISO job builds in a fresh Debian 13 container on a disposable Linux runner. The job uses a privileged container to let live-build mount its chroot and create the boot image. Windows needs no WSL, Docker, or administrator access for this workflow.
 

@@ -2,6 +2,9 @@
 
 ## 0.1.0 Alpha · first release target
 
+- Reduced the default app set and disabled file indexing and sponsored browser content.
+- Added Nova Performance profiles, on-demand LibreOffice installation in Nova Store, and release inventory and benchmark reports.
+
 - Debian 13 amd64 live-image build with GitHub Actions artifact upload.
 - NovaOS GRUB entries, release identity, launcher logo, and original Midnight Horizon wallpaper.
 - Nova Midnight and Nova Daybreak Plasma color schemes and initial panel defaults.
