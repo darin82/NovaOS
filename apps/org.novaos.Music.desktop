@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=Nova Music
+Comment=Play your local library and authorized radio streams
+Exec=nova-music
+Icon=audio-x-generic-symbolic
+Categories=AudioVideo;Audio;Player;

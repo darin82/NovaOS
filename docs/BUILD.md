@@ -6,7 +6,7 @@
 
 The repository fixes the Debian suite, architecture, archive components, explicitly requested package names, and recommendation policy. APT resolves transitive dependencies from signed Trixie, Trixie Updates, and Trixie Security archives. Publish the resolved package manifest and build-tool versions with the ISO. Package versions and ISO hashes can change as Debian ships security and point updates. Identical inputs here specify the same package selection policy, with archive contents resolved at build time.
 
-APT security updates remain enabled. Nova Store adds the Flathub remote only when the user chooses to install LibreOffice.
+APT security updates remain enabled. Nova Store adds the per-user Flathub remote through an approved Flatpak install or repository action.
 
 ## Validation gates
 

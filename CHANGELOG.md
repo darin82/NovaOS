@@ -2,6 +2,8 @@
 
 ## 0.1.0 Alpha · first release target
 
+- Added Nova Music and replaced the initial Store menu with a native APT and Flatpak application catalog.
+
 - Added Nova Gaming Hub, optional gaming and recording tools, native Steam discovery, per-game boost, and MangoHud configuration.
 
 - Added bounded ZRAM, an on-demand Performance Center, reversible workload profiles, package size reports, and a Linux guest benchmark.

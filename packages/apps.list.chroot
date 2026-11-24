@@ -16,3 +16,7 @@ zip
 unzip
 bluedevil
 powerdevil
+ffmpeg
+mpv
+mpv-mpris
+qml6-module-qt-labs-platform

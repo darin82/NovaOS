@@ -20,6 +20,7 @@ jobs:
       - run: python3 tests/test-zero-bloat.py
       - run: python3 tests/test-apps.py
       - run: python3 tests/test-gaming.py
+      - run: python3 tests/test-music-store.py
       - run: python3 scripts/benchmark-guest.py --help
       - run: python3 -m py_compile apps/nova-metrics.py scripts/benchmark-guest.py
       - run: node tests/test-desktop.mjs

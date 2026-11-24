@@ -105,7 +105,7 @@ def main():
         "config/includes.chroot/usr/lib/live/config/0086-nova-sddm",
         "apps/nova-profile",
         "apps/nova-run",
-        "apps/nova-store",
+        "apps/nova-music",
         "apps/nova-appearance",
         "apps/nova-update",
     ]

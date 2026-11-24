@@ -9,3 +9,4 @@ org.kde.haruna.desktop|Nova Media|nova-media|haruna|show
 org.kde.kcalc.desktop|Nova Calculator|nova-calculator|kcalc|show
 firefox-esr.desktop|Nova Browser|nova-browser|firefox-esr|show
 org.kde.ark.desktop|Ark|system-file-manager|ark|hide
+mpv.desktop|mpv|video-x-generic|mpv|hide

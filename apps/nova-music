@@ -1,0 +1,19 @@
+#!/bin/sh
+set -eu
+if [ "$(id -u)" -eq 0 ]; then
+    echo 'Run Nova Music as the desktop user.' >&2
+    exit 1
+fi
+umask 077
+runtime=${XDG_RUNTIME_DIR:?A desktop session is required}
+export NOVA_MUSIC_SESSION
+NOVA_MUSIC_SESSION=$(mktemp -d "$runtime/nova-music.XXXXXXXX")
+cleanup() {
+    /usr/lib/novaos/nova-music.py quit null >/dev/null 2>&1 || true
+    rm -f -- "$NOVA_MUSIC_SESSION/player.sock" "$NOVA_MUSIC_SESSION/player.log"
+    rmdir -- "$NOVA_MUSIC_SESSION"
+}
+trap cleanup EXIT
+trap 'exit 130' INT
+trap 'exit 143' TERM
+QT_QUICK_CONTROLS_STYLE=org.kde.desktop qml6 --apptype widget /usr/lib/novaos/Music.qml

@@ -1,5 +1,11 @@
 # NovaOS progress
 
+## Phase 6 · Music and Store
+
+- Implemented native Nova Music with SQLite, on-demand mpv/MPRIS playback, playlists, radio, artwork, local lyrics, a mini-player and a tray control. Added the native Store with an optional APT and Flatpak catalog, lazy metadata, and real package transactions in Konsole.
+- Linux guest verification remains pending for QML, playback, media keys, lock-screen controls, store installation and removal, and hardware audio.
+- Local SQLite, playlist round-trip, mpv command, catalog, transaction-consent and regression fixtures passed. Verified the mpv MPRIS plugin path against the Debian package and checked Flathub's live screenshot metadata shape.
+
 ## Phase 5 · Gaming
 
 - Added the native Gaming Hub, local Steam discovery, editable game records, artwork and history where available, per-game boost and overlay controls, and optional setup and capture paths. Heavy gaming packages remain outside the ISO manifest.

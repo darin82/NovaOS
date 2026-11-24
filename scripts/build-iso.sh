@@ -118,7 +118,7 @@ done
 for profile in "$ROOT/desktop/konsole/"*; do
     install -Dm0644 "$profile" "$tree/usr/share/konsole/$(basename "$profile")"
 done
-for app in nova-profile nova-run nova-store nova-appearance nova-update; do
+for app in nova-profile nova-run nova-appearance nova-update nova-music; do
     install -Dm0755 "$ROOT/apps/$app" "$tree/usr/bin/$app"
 done
 for input in launchers.tsv brand-launchers.awk; do
@@ -126,6 +126,12 @@ for input in launchers.tsv brand-launchers.awk; do
 done
 install -Dm0644 "$ROOT/apps/Performance.qml" "$tree/usr/lib/novaos/Performance.qml"
 install -Dm0644 "$ROOT/apps/Gaming.qml" "$tree/usr/lib/novaos/Gaming.qml"
+for qml in NovaBridge Music Store; do
+    install -Dm0644 "$ROOT/apps/$qml.qml" "$tree/usr/lib/novaos/$qml.qml"
+done
+install -Dm0755 "$ROOT/apps/nova-music.py" "$tree/usr/lib/novaos/nova-music.py"
+install -Dm0755 "$ROOT/apps/nova-store.py" "$tree/usr/bin/nova-store"
+install -Dm0644 "$ROOT/apps/store-catalog.json" "$tree/usr/share/novaos/store-catalog.json"
 install -Dm0644 "$ROOT/apps/mangohud.conf" "$tree/usr/share/novaos/mangohud.conf"
 install -Dm0755 "$ROOT/apps/nova-gaming.py" "$tree/usr/bin/nova-gaming"
 install -Dm0755 "$ROOT/apps/nova-metrics.py" "$tree/usr/lib/novaos/nova-metrics.py"

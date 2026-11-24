@@ -72,6 +72,15 @@ for asset in \
     usr/bin/nova-gaming \
     usr/share/novaos/mangohud.conf \
     usr/lib/novaos/Gaming.qml \
+    usr/lib/novaos/NovaBridge.qml \
+    usr/lib/novaos/Music.qml \
+    usr/lib/novaos/Store.qml \
+    usr/lib/novaos/nova-music.py \
+    usr/bin/nova-music \
+    usr/bin/nova-store \
+    usr/share/novaos/store-catalog.json \
+    usr/share/applications/org.novaos.Music.desktop \
+    usr/lib/mpv-mpris/mpris.so \
     usr/share/applications/org.novaos.Gaming.desktop \
     usr/lib/novaos/Performance.qml \
     usr/lib/novaos/nova-metrics.py \

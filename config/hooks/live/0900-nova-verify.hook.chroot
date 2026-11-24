@@ -10,10 +10,12 @@ test -r /usr/share/desktop-base/nova-logo.svg
 test -r /usr/lib/x86_64-linux-gnu/qt6/plugins/kf6/kio/kio_filenamesearch.so
 
 for executable in flatpak nmcli wpctl kdialog Xorg plasma-apply-colorscheme \
-    kreadconfig6 kwriteconfig6 qdbus6 nova-appearance nova-update nova-gaming apt-get apt-cache qml6 powerprofilesctl; do
+    kreadconfig6 kwriteconfig6 qdbus6 nova-appearance nova-update nova-gaming apt-get apt-cache qml6 powerprofilesctl \
+    nova-music nova-store mpv ffprobe ffmpeg; do
     command -v "$executable" >/dev/null
 done
 test -x /usr/lib/systemd/system-generators/zram-generator
+test -r /usr/lib/mpv-mpris/mpris.so
 # Retain upstream desktop IDs, MIME types and actions, including native shortcuts.
 install -d -m 0755 /usr/local/share/applications
 while IFS='|' read -r entry name icon executable visibility; do

@@ -1,7 +1,7 @@
 [Desktop Entry]
 Type=Application
 Name=Nova Store
-Comment=Install or remove optional apps
+Comment=Browse and manage optional APT and Flatpak apps
 Exec=nova-store
 Icon=system-software-install
 Categories=System;PackageManager;

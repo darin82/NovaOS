@@ -1,0 +1,114 @@
+[
+  [
+    "Steam",
+    "Gaming",
+    "flatpak",
+    "com.valvesoftware.Steam",
+    "Install Steam and manage Proton through the Steam client."
+  ],
+  [
+    "Discord",
+    "Internet",
+    "flatpak",
+    "com.discordapp.Discord",
+    "Optional voice and chat client."
+  ],
+  [
+    "Minecraft Java",
+    "Gaming",
+    "flatpak",
+    "org.prismlauncher.PrismLauncher",
+    "Prism Launcher manages Minecraft Java installations. The game is sold separately."
+  ],
+  [
+    "OBS Studio",
+    "Multimedia",
+    "flatpak",
+    "com.obsproject.Studio",
+    "Screen recording and streaming."
+  ],
+  [
+    "Blender",
+    "Graphics",
+    "apt",
+    "blender",
+    "3D modeling, animation and rendering."
+  ],
+  [
+    "Blender",
+    "Graphics",
+    "flatpak",
+    "org.blender.Blender",
+    "3D modeling, animation and rendering."
+  ],
+  [
+    "GIMP",
+    "Graphics",
+    "apt",
+    "gimp",
+    "Image editing."
+  ],
+  [
+    "GIMP",
+    "Graphics",
+    "flatpak",
+    "org.gimp.GIMP",
+    "Image editing."
+  ],
+  [
+    "Visual Studio Code",
+    "Development",
+    "flatpak",
+    "com.visualstudio.code",
+    "Code editor packaged for Flatpak."
+  ],
+  [
+    "Godot",
+    "Development",
+    "flatpak",
+    "org.godotengine.Godot",
+    "Open-source game engine and editor."
+  ],
+  [
+    "LibreOffice",
+    "Optional productivity",
+    "flatpak",
+    "org.libreoffice.LibreOffice",
+    "Optional office suite."
+  ],
+  [
+    "Inkscape",
+    "Graphics",
+    "apt",
+    "inkscape",
+    "Vector illustration."
+  ],
+  [
+    "Audacity",
+    "Multimedia",
+    "apt",
+    "audacity",
+    "Audio recording and editing."
+  ],
+  [
+    "KeePassXC",
+    "Utilities",
+    "apt",
+    "keepassxc",
+    "Local password manager."
+  ],
+  [
+    "FileZilla",
+    "Internet",
+    "apt",
+    "filezilla",
+    "File transfer client."
+  ],
+  [
+    "Krita",
+    "Graphics",
+    "apt",
+    "krita",
+    "Digital painting."
+  ]
+]
