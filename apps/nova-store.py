@@ -206,6 +206,29 @@ def transaction(action, source="", ref=""):
 
 
 def ui(action, data):
+    if action == "optional-ai":
+        launcher = Path(os.environ.get("XDG_DATA_HOME", Path.home() / ".local/share")) / "applications/org.novaos.AI.desktop"
+        if data == "enable":
+            launcher.parent.mkdir(parents=True, exist_ok=True)
+            launcher.write_bytes(Path("/usr/lib/novaos/ai/org.novaos.AI.desktop").read_bytes())
+        elif data == "disable":
+            runtime = os.environ.get("XDG_RUNTIME_DIR")
+            if runtime:
+                for marker in Path(runtime).glob("nova-ai.*/window.pid"):
+                    try:
+                        pid = int(marker.read_text())
+                        args = Path(f"/proc/{pid}/cmdline").read_bytes().split(b"\0")
+                        if b"/usr/lib/novaos/ai/nova-ai" in args:
+                            raise ValueError("Close the open Nova AI window before disabling it.")
+                    except FileNotFoundError:
+                        continue
+            launcher.unlink(missing_ok=True)
+        elif data == "open" and launcher.is_file():
+            subprocess.Popen(["/usr/lib/novaos/ai/nova-ai"], stdin=subprocess.DEVNULL,
+                             stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, start_new_session=True)
+        elif data != "status":
+            raise ValueError("Enable Nova AI before opening it.")
+        return launcher.is_file()
     if action == "browse":
         return browse(data)
     if action == "details":

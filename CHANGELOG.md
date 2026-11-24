@@ -2,6 +2,8 @@
 
 ## 0.1.0 Alpha · first release target
 
+- Added opt-in Nova AI with streamed local and cloud responses, secure credential handling, and a confirmation-based system action palette.
+
 - Added Nova Music and replaced the initial Store menu with a native APT and Flatpak application catalog.
 
 - Added Nova Gaming Hub, optional gaming and recording tools, native Steam discovery, per-game boost, and MangoHud configuration.

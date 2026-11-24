@@ -1,0 +1,15 @@
+#!/bin/sh
+set -eu
+test "$(id -u)" -ne 0
+test -f "${XDG_DATA_HOME:-$HOME/.local/share}/applications/org.novaos.AI.desktop"
+umask 077
+export NOVA_AI_SESSION
+NOVA_AI_SESSION=$(mktemp -d "${XDG_RUNTIME_DIR:?Desktop session required}/nova-ai.XXXXXXXX")
+printf '%s\n' "$$" > "$NOVA_AI_SESSION/window.pid"
+cleanup() {
+    /usr/lib/novaos/ai/nova-ai.py cleanup null >/dev/null 2>&1 || true
+}
+trap cleanup EXIT
+trap 'exit 130' INT
+trap 'exit 143' TERM
+QT_QUICK_CONTROLS_STYLE=org.kde.desktop qml6 /usr/lib/novaos/ai/AI.qml "$@"

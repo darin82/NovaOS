@@ -110,5 +110,26 @@
     "apt",
     "krita",
     "Digital painting."
+  ],
+  [
+    "Secret Service tools",
+    "Utilities",
+    "apt",
+    "libsecret-tools",
+    "Optional desktop credential storage commands for Nova AI."
+  ],
+  [
+    "Brightness control utility",
+    "Utilities",
+    "apt",
+    "brightnessctl",
+    "Optional hardware brightness control for Nova AI."
+  ],
+  [
+    "Zstandard tools",
+    "Utilities",
+    "apt",
+    "zstd",
+    "Optional decompressor for the Nova-managed Ollama runtime."
   ]
 ]

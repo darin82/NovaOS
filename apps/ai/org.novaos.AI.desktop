@@ -1,0 +1,13 @@
+[Desktop Entry]
+Type=Application
+Name=Nova AI
+Comment=Optional local or cloud operating system assistant
+Exec=/usr/lib/novaos/ai/nova-ai
+Icon=system-search
+Categories=Utility;
+Actions=Commands;
+X-KDE-Shortcuts=Meta+Space
+
+[Desktop Action Commands]
+Name=Open AI command palette
+Exec=/usr/lib/novaos/ai/nova-ai -- --palette

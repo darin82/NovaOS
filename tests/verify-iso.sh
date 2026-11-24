@@ -75,6 +75,12 @@ for asset in \
     usr/lib/novaos/NovaBridge.qml \
     usr/lib/novaos/Music.qml \
     usr/lib/novaos/Store.qml \
+    usr/lib/novaos/ai/AI.qml \
+    usr/lib/novaos/ai/nova-ai \
+    usr/lib/novaos/ai/nova-ai.py \
+    usr/lib/novaos/ai/providers.py \
+    usr/lib/novaos/ai/actions.py \
+    usr/lib/novaos/ai/ollama_install.py \
     usr/lib/novaos/nova-music.py \
     usr/bin/nova-music \
     usr/bin/nova-store \

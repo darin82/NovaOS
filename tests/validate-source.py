@@ -106,6 +106,7 @@ def main():
         "apps/nova-profile",
         "apps/nova-run",
         "apps/nova-music",
+        "apps/ai/nova-ai",
         "apps/nova-appearance",
         "apps/nova-update",
     ]

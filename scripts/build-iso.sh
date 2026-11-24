@@ -129,6 +129,12 @@ install -Dm0644 "$ROOT/apps/Gaming.qml" "$tree/usr/lib/novaos/Gaming.qml"
 for qml in NovaBridge Music Store; do
     install -Dm0644 "$ROOT/apps/$qml.qml" "$tree/usr/lib/novaos/$qml.qml"
 done
+for file in AI.qml org.novaos.AI.desktop actions.py providers.py ollama_install.py; do
+    install -Dm0644 "$ROOT/apps/ai/$file" "$tree/usr/lib/novaos/ai/$file"
+done
+for file in nova-ai nova-ai.py; do
+    install -Dm0755 "$ROOT/apps/ai/$file" "$tree/usr/lib/novaos/ai/$file"
+done
 install -Dm0755 "$ROOT/apps/nova-music.py" "$tree/usr/lib/novaos/nova-music.py"
 install -Dm0755 "$ROOT/apps/nova-store.py" "$tree/usr/bin/nova-store"
 install -Dm0644 "$ROOT/apps/store-catalog.json" "$tree/usr/share/novaos/store-catalog.json"

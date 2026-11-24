@@ -1,5 +1,12 @@
 # NovaOS progress
 
+## Phase 7 · Nova AI
+
+- Added an opt-in native assistant with local conversation history, streaming adapters, credential-wallet integration, selected attachments, explicit cloud consent, and previewed system actions.
+- Added on-demand local Ollama installation, model management, hardware suggestions and session cleanup. The ISO package allowlist still contains no Ollama runtime or model.
+- Live provider, Secret Service, QML, and hardware action verification remain pending a Linux guest. See [optional Nova AI](docs/AI.md).
+- Local provider parsing, credential input, action approval and replay rejection, cancellation, installer checksum and regression fixtures passed.
+
 ## Phase 6 · Music and Store
 
 - Implemented native Nova Music with SQLite, on-demand mpv/MPRIS playback, playlists, radio, artwork, local lyrics, a mini-player and a tray control. Added the native Store with an optional APT and Flatpak catalog, lazy metadata, and real package transactions in Konsole.

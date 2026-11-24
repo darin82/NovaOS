@@ -18,6 +18,7 @@ ApplicationWindow {
     property bool installed: false
     property bool sidebar: true
     property string message: ""
+    property bool aiEnabled: false
 
     function search(reset) {
         if (reset)
@@ -46,6 +47,10 @@ ApplicationWindow {
                 repositories.open()
             } else if (action === "transaction") {
                 store.message = "Review the transaction and its progress in the terminal. Refresh when it finishes."
+            } else if (action === "optional-ai") {
+                store.aiEnabled = result
+                if (!optionalAI.visible)
+                    optionalAI.open()
             }
         }
         onFailed: (action, message) => store.message = message
@@ -65,6 +70,7 @@ ApplicationWindow {
             Button { text: "Search"; enabled: !bridge.busy; onClicked: store.search(true) }
             Button { text: "Updates"; enabled: !bridge.busy; onClicked: updates.open() }
             Button { text: "Repositories"; enabled: !bridge.busy; onClicked: bridge.invoke("repos", null) }
+            Button { text: "Nova AI"; enabled: !bridge.busy; onClicked: bridge.invoke("optional-ai", "status") }
         }
     }
 
@@ -191,6 +197,32 @@ ApplicationWindow {
     onSelectedChanged: {
         if (selected && width <= 760)
             compactDetails.open()
+    }
+
+    Dialog {
+        id: optionalAI
+        title: "Optional Nova AI"
+        anchors.centerIn: parent
+        standardButtons: Dialog.Close
+        ColumnLayout {
+            Label {
+                Layout.preferredWidth: 365
+                wrapMode: Text.Wrap
+                text: "Enable adds Nova AI to your launcher. Local models and cloud providers require separate setup. Close Nova AI before disabling it."
+            }
+            RowLayout {
+                Button {
+                    text: store.aiEnabled ? "Disable" : "Enable"
+                    enabled: !bridge.busy
+                    onClicked: bridge.invoke("optional-ai", store.aiEnabled ? "disable" : "enable")
+                }
+                Button {
+                    text: "Open"
+                    enabled: store.aiEnabled && !bridge.busy
+                    onClicked: { bridge.invoke("optional-ai", "open"); optionalAI.close() }
+                }
+            }
+        }
     }
 
     Dialog {
