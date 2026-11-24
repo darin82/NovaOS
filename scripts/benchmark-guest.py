@@ -5,6 +5,7 @@ import json
 import os
 from pathlib import Path
 import platform
+import re
 import signal
 import subprocess
 import tempfile
@@ -58,7 +59,10 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--label", choices=("baseline", "optimized"), required=True)
     parser.add_argument("--idle-seconds", type=int, default=10, choices=range(3, 61), metavar="3-60")
+    parser.add_argument("--iso-sha256", help="SHA-256 of the booted ISO")
     args = parser.parse_args()
+    if args.iso_sha256 and not re.fullmatch(r"[0-9a-fA-F]{64}", args.iso_sha256):
+        parser.error("--iso-sha256 requires 64 hexadecimal digits")
     if platform.system() != "Linux" or platform.freedesktop_os_release().get("ID") != "novaos":
         parser.error("run this benchmark inside a booted NovaOS Linux system")
     if os.environ.get("XDG_SESSION_TYPE") != "wayland" or os.getuid() == 0:
@@ -76,6 +80,7 @@ def main():
                               "--state=enabled", "--no-legend", "--no-pager")
     print(json.dumps({
         "label": args.label, "kernel": platform.release(), "idle_seconds": args.idle_seconds,
+        "iso_sha256": args.iso_sha256.lower() if args.iso_sha256 else None,
         "idle_ram_kib": used_memory,
         "idle_cpu_percent": round(100 * (1 - (last_idle - first_idle) / (last_total - first_total)), 2)
         if last_total > first_total else None,
@@ -89,6 +94,14 @@ def main():
         "installed_tree_kib": read_command("du", "-skx", "/usr", "/etc", "/var/lib/dpkg", timeout=120),
         "terminal_child_startup": [launch_terminal() for _ in range(3)],
         "swaps": read_command("swapon", "--show"),
+        "guest_health": {
+            "display_manager": read_command("systemctl", "is-active", "display-manager.service"),
+            "network_manager": read_command("systemctl", "is-active", "NetworkManager.service"),
+            "network_devices": read_command("nmcli", "-t", "-f", "TYPE,STATE", "device", "status"),
+            "audio_pipewire": read_command("systemctl", "--user", "is-active", "pipewire.service"),
+            "audio_wireplumber": read_command("systemctl", "--user", "is-active", "wireplumber.service"),
+            "apt_sources": read_command("apt-cache", "policy"),
+        },
     }, indent=2))
 
 

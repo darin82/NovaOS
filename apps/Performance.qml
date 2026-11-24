@@ -18,6 +18,7 @@ ApplicationWindow {
     property bool sampling: false
     property string boot: ""
     property string error: ""
+    property var cpuHistory: []
 
     function requestSample() {
         if (!sampling) {
@@ -70,6 +71,10 @@ ApplicationWindow {
                 }
                 window.previous = window.sample
                 window.sample = JSON.parse(String(data["stdout"]))
+                if (window.cpu() >= 0) {
+                    window.cpuHistory = window.cpuHistory.slice(-29).concat(window.cpu())
+                    historyPlot.requestPaint()
+                }
                 window.error = ""
             } else if (source.endsWith(" boot")) {
                 window.boot = String(data["stdout"] || "").trim()
@@ -119,7 +124,29 @@ ApplicationWindow {
                 }
             }
             Label { text: window.cpu() < 0 ? "CPU —" : "CPU " + window.cpu().toFixed(1) + "%" }
-            ProgressBar { Layout.fillWidth: true; from: 0; to: 100; value: Math.max(0, window.cpu()) }
+            Canvas {
+                id: historyPlot
+                Layout.fillWidth: true
+                Layout.preferredHeight: 42
+                Accessible.name: "CPU utilization history"
+                onWidthChanged: requestPaint()
+                onPaint: {
+                    const context = getContext("2d")
+                    context.clearRect(0, 0, width, height)
+                    context.strokeStyle = "#8B5CF6"
+                    context.lineWidth = 2
+                    context.beginPath()
+                    window.cpuHistory.forEach((value, index) => {
+                        const x = (30 - window.cpuHistory.length + index) * (width - 2) / 29 + 1
+                        const y = 1 + (height - 2) * (1 - value / 100)
+                        if (index === 0)
+                            context.moveTo(x, y)
+                        else
+                            context.lineTo(x, y)
+                    })
+                    context.stroke()
+                }
+            }
             Label { text: "RAM   " + (window.sample ? window.memoryText(window.sample.ram) : "—") }
             Label { text: "Swap   " + (window.sample ? window.memoryText(window.sample.swap) : "—") }
             Label { text: "GPU   " + (window.sample && window.sample.gpu !== null ? window.sample.gpu + "%" : "Unavailable") }

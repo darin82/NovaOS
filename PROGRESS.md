@@ -6,6 +6,7 @@
 - Added an on-demand QML Performance Center, hardware power holds, reversible low-effects profiles, and optional GameMode integration. Existing essential services and package gates remain in place.
 - Added Linux guest benchmarking and a baseline table in PERFORMANCE.md. Actual boot, memory, application startup, hardware metrics, and guest profile restoration remain pending ISO builds and VirtualBox tests.
 - Local source, profile and restoration fixtures, launcher tests, desktop tests, Python compilation and workflow lint passed. No guest metrics were collected.
+- Added CPU history and guest benchmark evidence for display, networking, audio, and APT source configuration.
 
 ## Phase 3 · System applications
 
