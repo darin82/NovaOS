@@ -2,6 +2,8 @@
 
 ## 0.1.0 Alpha · first release target
 
+- Added Nova Quick Settings, independent appearance controls, an Ultra Lite appearance preset, and desktop shortcuts for new users.
+
 - Reduced the default app set and disabled file indexing and sponsored browser content.
 - Added Nova Performance profiles, on-demand LibreOffice installation in Nova Store, and release inventory and benchmark reports.
 

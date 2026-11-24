@@ -49,6 +49,7 @@ def main():
         "live-boot", "live-config-systemd", "user-setup", "systemd-sysv", "plasma-desktop",
         "kwin-wayland", "sddm", "firefox-esr", "konsole", "dolphin", "flatpak",
         "network-manager", "pipewire-audio", "wireplumber", "kdialog", "kio-extras",
+        "kde-spectacle", "plasma-systemmonitor",
     }
     require(required <= packages, f"Missing packages: {sorted(required - packages)}")
     for name in ("packages/exclusions.regex", "config/startup-exclusions.regex"):
@@ -63,7 +64,7 @@ def main():
     browser = json.loads(read("config/includes.chroot/etc/firefox/policies/policies.json"))["policies"]
     require(not browser["FirefoxHome"]["SponsoredStories"], "Sponsored news must stay disabled")
 
-    for asset in ("branding/novaos.svg", "branding/wallpaper.svg"):
+    for asset in ("branding/novaos.svg", "branding/wallpaper.svg", "desktop/icons/quick-settings.svg"):
         svg = ET.fromstring(read(asset))
         require(svg.tag == "{http://www.w3.org/2000/svg}svg" and "viewBox" in svg.attrib,
                 f"Invalid SVG root: {asset}")
@@ -72,6 +73,14 @@ def main():
     require(metadata["KPlugin"]["Id"] == "NovaOS", "Wallpaper ID differs from its install directory")
     theme = ini("desktop/kdeglobals")["General"]["ColorScheme"]
     require(theme == "NovaMidnight", "Nova Midnight must be the default color scheme")
+    quick_settings = json.loads(read("desktop/quick-settings/metadata.json"))
+    require(quick_settings["KPackageStructure"] == "Plasma/Applet"
+            and quick_settings["KPlugin"]["Id"] == "org.novaos.quicksettings", "Invalid applet ID")
+    qml = read("desktop/quick-settings/contents/ui/main.qml")
+    require("PlasmoidItem {" in qml and "interval: 0" in qml, "Quick settings must be an on-demand applet")
+    shortcuts = ini("desktop/kglobalshortcutsrc")
+    require(shortcuts["services][org.kde.spectacle.desktop"]["RectangularRegionScreenShot"] == "Meta+Shift+S",
+            "Spectacle region capture shortcut missing")
     for name in ("NovaMidnight", "NovaDaybreak"):
         palette = ini(f"desktop/{name}.colors")
         require(palette["General"]["ColorScheme"] == name, f"Invalid scheme ID: {name}")
@@ -97,6 +106,7 @@ def main():
         "apps/nova-profile",
         "apps/nova-run",
         "apps/nova-store",
+        "apps/nova-appearance",
     ]
     shell = shutil.which("sh")
     for path in shell_files:

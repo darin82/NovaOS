@@ -18,6 +18,9 @@ Start with EFI disabled to test BIOS. Power off the test VM, enable EFI with Sec
 ## Acceptance checklist
 
 - GRUB shows the NovaOS 0.1.0 Alpha menu. Select **Start live desktop**.
+- In a fresh session open the quick settings icon beside the clock. Try mute, themes, and each effect independently. Apply Ultra Lite and verify the panel is opaque and `nova-appearance status` returns `false false false`. The Wi-Fi control requires a wireless interface and may be unavailable with VirtualBox NAT.
+- With the guest keyboard captured, test Super, Super+E/I/L/D, Super+Arrow, Ctrl+Shift+Esc, and Super+Shift+S. If Windows intercepts a shortcut, repeat with VirtualBox's soft keyboard. Verify the screenshot action opens rectangular selection.
+- Use Plasma Edit Mode to resize and align the panel, open the calendar and notification history from the tray, switch between two virtual desktops, and open the desktop context menu.
 - The guest reaches the Plasma desktop without a login prompt. Check the Midnight Horizon wallpaper, branded launcher, centered panel, and Nova Midnight colors.
 - Open Konsole and verify `echo "$XDG_SESSION_TYPE"` returns `wayland`. Check `grep -E '^(PRETTY_NAME|ID)=' /etc/os-release`.
 - Open Firefox ESR and load an HTTPS page over NAT. Run `nmcli device status` and verify the Ethernet adapter is connected.

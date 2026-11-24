@@ -2,7 +2,7 @@
   <title>NovaOS Midnight Horizon</title>
   <defs>
     <linearGradient id="sky" x2="1" y2="1">
-      <stop stop-color="#070609"/>
+      <stop stop-color="#08080c"/>
       <stop offset=".56" stop-color="#161024"/>
       <stop offset="1" stop-color="#0d0914"/>
     </linearGradient>
@@ -12,8 +12,8 @@
     </radialGradient>
     <linearGradient id="horizon" x2="1" y2="0">
       <stop stop-color="#0b1633" stop-opacity="0"/>
-      <stop offset=".32" stop-color="#8652fa"/>
-      <stop offset=".72" stop-color="#f6eeff"/>
+      <stop offset=".32" stop-color="#8b5cf6"/>
+      <stop offset=".72" stop-color="#f5f5fa"/>
       <stop offset="1" stop-color="#492bb4" stop-opacity="0"/>
     </linearGradient>
     <linearGradient id="planet" x2="0" y2="1">

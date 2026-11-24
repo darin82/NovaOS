@@ -3,9 +3,9 @@ Name=Nova Midnight
 ColorScheme=NovaMidnight
 
 [Colors:Window]
-BackgroundNormal=19,16,25
+BackgroundNormal=18,18,26
 BackgroundAlternate=26,21,35
-ForegroundNormal=247,242,255
+ForegroundNormal=245,245,250
 ForegroundInactive=185,172,201
 ForegroundLink=201,172,255
 ForegroundVisited=202,163,255
@@ -13,13 +13,13 @@ ForegroundNegative=255,137,156
 ForegroundPositive=124,220,175
 ForegroundNeutral=255,200,120
 ForegroundActive=201,172,255
-DecorationFocus=169,119,252
+DecorationFocus=139,92,246
 DecorationHover=202,163,255
 
 [Colors:View]
-BackgroundNormal=13,11,18
+BackgroundNormal=8,8,12
 BackgroundAlternate=26,21,35
-ForegroundNormal=247,242,255
+ForegroundNormal=245,245,250
 ForegroundInactive=185,172,201
 ForegroundLink=201,172,255
 ForegroundVisited=202,163,255
@@ -27,13 +27,13 @@ ForegroundNegative=255,137,156
 ForegroundPositive=124,220,175
 ForegroundNeutral=255,200,120
 ForegroundActive=201,172,255
-DecorationFocus=169,119,252
+DecorationFocus=139,92,246
 DecorationHover=202,163,255
 
 [Colors:Button]
 BackgroundNormal=39,30,53
 BackgroundAlternate=26,21,35
-ForegroundNormal=247,242,255
+ForegroundNormal=245,245,250
 ForegroundInactive=185,172,201
 ForegroundLink=201,172,255
 ForegroundVisited=202,163,255
@@ -41,7 +41,7 @@ ForegroundNegative=255,137,156
 ForegroundPositive=124,220,175
 ForegroundNeutral=255,200,120
 ForegroundActive=201,172,255
-DecorationFocus=169,119,252
+DecorationFocus=139,92,246
 DecorationHover=202,163,255
 
 [Colors:Selection]
@@ -55,13 +55,13 @@ ForegroundNegative=255,255,255
 ForegroundPositive=255,255,255
 ForegroundNeutral=255,255,255
 ForegroundActive=255,255,255
-DecorationFocus=169,119,252
+DecorationFocus=139,92,246
 DecorationHover=202,163,255
 
 [Colors:Tooltip]
-BackgroundNormal=13,11,18
+BackgroundNormal=8,8,12
 BackgroundAlternate=26,21,35
-ForegroundNormal=247,242,255
+ForegroundNormal=245,245,250
 ForegroundInactive=185,172,201
 ForegroundLink=201,172,255
 ForegroundVisited=202,163,255
@@ -69,13 +69,13 @@ ForegroundNegative=255,137,156
 ForegroundPositive=124,220,175
 ForegroundNeutral=255,200,120
 ForegroundActive=201,172,255
-DecorationFocus=169,119,252
+DecorationFocus=139,92,246
 DecorationHover=202,163,255
 
 [Colors:Complementary]
-BackgroundNormal=19,16,25
+BackgroundNormal=18,18,26
 BackgroundAlternate=26,21,35
-ForegroundNormal=247,242,255
+ForegroundNormal=245,245,250
 ForegroundInactive=185,172,201
 ForegroundLink=201,172,255
 ForegroundVisited=202,163,255
@@ -83,13 +83,13 @@ ForegroundNegative=255,137,156
 ForegroundPositive=124,220,175
 ForegroundNeutral=255,200,120
 ForegroundActive=201,172,255
-DecorationFocus=169,119,252
+DecorationFocus=139,92,246
 DecorationHover=202,163,255
 
 [Colors:Header]
-BackgroundNormal=19,16,25
+BackgroundNormal=18,18,26
 BackgroundAlternate=26,21,35
-ForegroundNormal=247,242,255
+ForegroundNormal=245,245,250
 ForegroundInactive=185,172,201
 ForegroundLink=201,172,255
 ForegroundVisited=202,163,255
@@ -97,11 +97,11 @@ ForegroundNegative=255,137,156
 ForegroundPositive=124,220,175
 ForegroundNeutral=255,200,120
 ForegroundActive=201,172,255
-DecorationFocus=169,119,252
+DecorationFocus=139,92,246
 DecorationHover=202,163,255
 
 [WM]
-activeBackground=19,16,25
-activeForeground=247,242,255
-inactiveBackground=19,16,25
+activeBackground=18,18,26
+activeForeground=245,245,250
+inactiveBackground=18,18,26
 inactiveForeground=185,172,201

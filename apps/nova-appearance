@@ -1,0 +1,68 @@
+#!/bin/sh
+set -eu
+export LC_ALL=C
+
+status() {
+    blur=$(kreadconfig6 --file kwinrc --group Plugins --key blurEnabled --default false)
+    transparency=$(kreadconfig6 --file nova-apparc --group Appearance --key PanelTransparency --default true)
+    factor=$(kreadconfig6 --file kdeglobals --group KDE --key AnimationDurationFactor --default 0.75)
+    animations=true
+    case "$factor" in 0|0.0|0.00) animations=false ;; esac
+    printf '%s %s %s\n' "$blur" "$transparency" "$animations"
+}
+
+reconfigure() {
+    qdbus6 org.kde.KWin /KWin org.kde.KWin.reconfigure >/dev/null
+}
+
+set_blur() {
+    kwriteconfig6 --file kwinrc --group Plugins --key blurEnabled --type bool "$1"
+}
+
+set_motion() {
+    kwriteconfig6 --notify --file kdeglobals --group KDE --key AnimationDurationFactor "$1"
+}
+
+set_transparency() {
+    opacity=opaque
+    if [ "$1" = true ]; then
+        opacity=translucent
+    fi
+    qdbus6 org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.evaluateScript \
+        "for (const panel of panels()) { if (panel.location === 'bottom') panel.opacity = '$opacity'; }" >/dev/null
+    kwriteconfig6 --file nova-apparc --group Appearance --key PanelTransparency --type bool "$1"
+}
+
+case "${1:-status}:${2:-}" in
+    status:) ;;
+    blur:on) set_blur true; reconfigure ;;
+    blur:off) set_blur false; reconfigure ;;
+    transparency:on) set_transparency true ;;
+    transparency:off) set_transparency false ;;
+    animations:on) set_motion 0.75; reconfigure ;;
+    animations:off) set_motion 0; reconfigure ;;
+    ultra-lite:)
+        set_transparency false
+        set_blur false
+        set_motion 0
+        reconfigure
+        ;;
+    dark:)
+        plasma-apply-colorscheme NovaMidnight >/dev/null
+        kwriteconfig6 --notify --file kdeglobals --group Icons --key Theme NovaMidnight
+        ;;
+    light:)
+        plasma-apply-colorscheme NovaDaybreak >/dev/null
+        kwriteconfig6 --notify --file kdeglobals --group Icons --key Theme NovaDaybreak
+        ;;
+    mute:) wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle ;;
+    wifi:)
+        case "$(nmcli radio wifi)" in
+            enabled) nmcli radio wifi off ;;
+            disabled) nmcli radio wifi on ;;
+        esac
+        ;;
+    settings:) systemsettings </dev/null >/dev/null 2>&1 & ;;
+    *) echo 'Invalid Nova appearance option.' >&2; exit 2 ;;
+esac
+status

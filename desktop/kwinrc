@@ -1,0 +1,9 @@
+[Desktops]
+Number=2
+Rows=1
+
+[Plugins]
+blurEnabled=false
+
+[org.kde.kdecoration2]
+library=org.kde.breeze

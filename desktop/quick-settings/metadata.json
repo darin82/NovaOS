@@ -1,0 +1,12 @@
+{
+    "KPackageStructure": "Plasma/Applet",
+    "KPlugin": {
+        "Id": "org.novaos.quicksettings",
+        "Name": "Nova Quick Settings",
+        "Description": "Sound, Wi-Fi and desktop appearance",
+        "Icon": "nova-quick-settings",
+        "Version": "0.1.0",
+        "Category": "Utilities"
+    },
+    "X-Plasma-API-Minimum-Version": "6.0"
+}

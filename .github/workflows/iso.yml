@@ -18,7 +18,7 @@ jobs:
       - uses: actions/checkout@v4
       - run: python3 tests/validate-source.py
       - run: python3 tests/test-zero-bloat.py
-      - run: node --check desktop/nova-layout.js
+      - run: node tests/test-desktop.mjs
 
   iso:
     if: github.event_name == 'workflow_dispatch' || startsWith(github.ref, 'refs/tags/v')

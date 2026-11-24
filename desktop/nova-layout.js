@@ -19,8 +19,20 @@ for (const panel of panels()) {
     panel.opacity = "translucent";
     const launcher = panel.widgets("org.kde.plasma.kickoff")[0];
     if (launcher) {
+        if (!launcher.globalShortcut) {
+            launcher.globalShortcut = "Alt+F1";
+        }
         launcher.currentConfigGroup = ["General"];
         launcher.writeConfig("icon", "novaos");
+    }
+
+    const quickSettingsId = "org.novaos.quicksettings";
+    if (panel.widgets(quickSettingsId).length === 0) {
+        const quickSettings = panel.addWidget(quickSettingsId);
+        const clock = panel.widgets("org.kde.plasma.digitalclock")[0];
+        if (quickSettings && clock) {
+            quickSettings.index = clock.index;
+        }
     }
 
     for (const tasks of panel.widgets("org.kde.plasma.icontasks")) {

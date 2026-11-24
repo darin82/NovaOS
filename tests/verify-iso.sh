@@ -60,6 +60,13 @@ for asset in \
     usr/share/color-schemes/NovaMidnight.colors \
     usr/share/color-schemes/NovaDaybreak.colors \
     usr/share/plasma/shells/org.kde.plasma.desktop/contents/updates/10-nova-layout.js \
+    usr/share/plasma/plasmoids/org.novaos.quicksettings/metadata.json \
+    usr/share/plasma/plasmoids/org.novaos.quicksettings/contents/ui/main.qml \
+    usr/share/icons/NovaMidnight/scalable/actions/nova-quick-settings.svg \
+    usr/share/icons/NovaDaybreak/scalable/actions/nova-quick-settings.svg \
+    etc/skel/.config/kglobalshortcutsrc \
+    etc/xdg/kwinrc \
+    usr/bin/nova-appearance \
     usr/share/wayland-sessions/plasma.desktop
 do
     unsquashfs -cat "$WORK/filesystem.squashfs" "$asset" > "$WORK/guest-file"

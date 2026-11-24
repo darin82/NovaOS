@@ -9,8 +9,12 @@ test -r /usr/share/wallpapers/NovaOS/contents/images/1920x1080.svg
 test -r /usr/share/desktop-base/nova-logo.svg
 test -r /usr/lib/x86_64-linux-gnu/qt6/plugins/kf6/kio/kio_filenamesearch.so
 
-for executable in firefox-esr konsole dolphin flatpak nmcli wpctl kdialog Xorg; do
+for executable in firefox-esr konsole dolphin flatpak nmcli wpctl kdialog Xorg \
+    spectacle plasma-systemmonitor plasma-apply-colorscheme kreadconfig6 kwriteconfig6 qdbus6 nova-appearance; do
     command -v "$executable" >/dev/null
+done
+for entry in systemsettings.desktop org.kde.plasma-systemmonitor.desktop org.kde.spectacle.desktop; do
+    test -r "/usr/share/applications/$entry"
 done
 
 # Local desktop entries retain upstream IDs and actions and route menu launches

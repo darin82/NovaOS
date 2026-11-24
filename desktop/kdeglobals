@@ -7,6 +7,7 @@ smallestReadableFont=Noto Sans,8,-1,5,400,0,0,0,0,0
 [KDE]
 LookAndFeelPackage=org.kde.breeze.desktop
 widgetStyle=Breeze
+AnimationDurationFactor=0.75
 
 [Icons]
-Theme=breeze-dark
+Theme=NovaMidnight

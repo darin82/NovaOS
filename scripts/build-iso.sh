@@ -74,6 +74,33 @@ for scheme in "$ROOT/desktop/"*.colors; do
     install -Dm0644 "$scheme" "$tree/usr/share/color-schemes/$(basename "$scheme")"
 done
 install -Dm0644 "$ROOT/desktop/kdeglobals" "$tree/etc/xdg/kdeglobals"
+install -Dm0644 "$ROOT/desktop/kwinrc" "$tree/etc/xdg/kwinrc"
+# KGlobalAccel uses KConfig::SimpleConfig and only reads its user copy.
+install -Dm0644 "$ROOT/desktop/kglobalshortcutsrc" "$tree/etc/skel/.config/kglobalshortcutsrc"
+applet="$tree/usr/share/plasma/plasmoids/org.novaos.quicksettings"
+install -Dm0644 "$ROOT/desktop/quick-settings/metadata.json" "$applet/metadata.json"
+install -Dm0644 "$ROOT/desktop/quick-settings/contents/ui/main.qml" "$applet/contents/ui/main.qml"
+for theme in NovaMidnight NovaDaybreak; do
+    inherits=breeze
+    if [ "$theme" = NovaMidnight ]; then
+        inherits=breeze-dark
+    fi
+    icons="$tree/usr/share/icons/$theme"
+    install -Dm0644 "$ROOT/desktop/icons/quick-settings.svg" "$icons/scalable/actions/nova-quick-settings.svg"
+    cat > "$icons/index.theme" <<EOF
+[Icon Theme]
+Name=$theme
+Inherits=$inherits,hicolor
+Directories=scalable/actions
+
+[scalable/actions]
+Size=24
+MinSize=16
+MaxSize=96
+Type=Scalable
+Context=Actions
+EOF
+done
 # KConfig reads the palette groups from the system kdeglobals on the first login.
 sed -n '/^\[Colors:/,$p' "$ROOT/desktop/NovaMidnight.colors" >> "$tree/etc/xdg/kdeglobals"
 install -Dm0644 "$ROOT/desktop/nova-layout.js" \
@@ -82,7 +109,7 @@ install -Dm0644 "$ROOT/apps/mimeapps.list" "$tree/etc/xdg/mimeapps.list"
 install -Dm0644 "$ROOT/desktop/baloofilerc" "$tree/etc/xdg/baloofilerc"
 install -d -m 0755 "$tree/etc/systemd/user"
 ln -s /dev/null "$tree/etc/systemd/user/kde-baloo.service"
-for app in nova-profile nova-run nova-store; do
+for app in nova-profile nova-run nova-store nova-appearance; do
     install -Dm0755 "$ROOT/apps/$app" "$tree/usr/bin/$app"
 done
 for entry in "$ROOT/apps/"*.desktop; do
