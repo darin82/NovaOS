@@ -68,6 +68,10 @@ for asset in \
     etc/xdg/kwinrc \
     usr/bin/nova-appearance \
     usr/bin/nova-update \
+    usr/bin/nova-benchmark \
+    usr/lib/novaos/Performance.qml \
+    usr/lib/novaos/nova-metrics.py \
+    etc/systemd/zram-generator.conf.d/50-novaos.conf \
     usr/share/applications/org.novaos.Update.desktop \
     usr/share/konsole/Nova.profile \
     usr/share/konsole/Nova.colorscheme \

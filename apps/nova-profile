@@ -4,6 +4,7 @@ umask 077
 
 config="${XDG_CONFIG_HOME:-$HOME/.config}/novaos"
 state="$config/performance-profile"
+saved="$config/appearance-before-profile"
 
 label() {
     case "$1" in
@@ -32,6 +33,29 @@ case "${1:-get}" in
             exit 2
         }
         mkdir -p "$config"
+        if [ "${XDG_SESSION_TYPE:-}" = wayland ] && [ -n "${DBUS_SESSION_BUS_ADDRESS:-}" ]; then
+            exec 9>"$config/profile.lock"
+            flock -x 9
+            case "$2" in
+                eco|ultra-lite)
+                    if [ ! -f "$saved" ]; then
+                        previous=$(nova-appearance snapshot)
+                        printf '%s\n' "$previous" > "$saved"
+                    elif [ "$2" = eco ]; then
+                        read -r blur transparency factor < "$saved"
+                        nova-appearance restore "$blur" "$transparency" "$factor" >/dev/null
+                    fi
+                    nova-appearance "$2" >/dev/null
+                    ;;
+                *)
+                    if [ -f "$saved" ]; then
+                        read -r blur transparency factor < "$saved"
+                        nova-appearance restore "$blur" "$transparency" "$factor" >/dev/null
+                        rm -f "$saved"
+                    fi
+                    ;;
+            esac
+        fi
         temp=$(mktemp "$config/.performance-profile.XXXXXXXX")
         trap 'rm -f -- "$temp"' EXIT
         printf '%s\n' "$2" > "$temp"

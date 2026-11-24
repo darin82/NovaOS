@@ -19,7 +19,7 @@ Each successful ISO build publishes `installed-packages.tsv`, `background-servic
 
 ## Workload profiles
 
-Open **Nova Performance** from the application launcher or run `nova-profile set PROFILE`. The selection applies to subsequent launches from NovaOS's Firefox ESR, Dolphin, and Konsole entries and to explicit `nova-run` commands. Applications that forward to an existing process continue in that process's original scope. KDE services keep their normal systemd settings.
+Open **Nova Performance Center** from the application launcher or run `nova-profile set PROFILE`. The selection applies to subsequent launches from NovaOS's Firefox ESR, Dolphin, and Konsole entries and to explicit `nova-run` commands. Applications that forward to an existing process continue in that process's original scope. KDE services keep their normal systemd settings.
 
 | Profile | CLI value | Settings for a new managed launch |
 | --- | --- | --- |
@@ -29,9 +29,9 @@ Open **Nova Performance** from the application launcher or run `nova-profile set
 | Nova Eco | `eco` | Weight 60 and nice increment 5 |
 | Nova Ultra Lite | `ultra-lite` | Weight 25 and nice increment 12 |
 
-Launch an installed game with `nova-run --game -- GAME [ARGS...]`. In Nova Gaming, the game and subprocesses in its user scope get a greater share of CPU time under contention. The transient scope ends with its processes. Launch opt-in tasks with `nova-run --background -- COMMAND` for weight 15 and nice increment 10. `nova-run --maintenance -- COMMAND` uses the same limits and returns exit 75 if a gaming scope is active, allowing the caller to retry later. APT and critical system services run outside this mechanism.
+Launch an installed game with `nova-run --game -- GAME [ARGS...]`. In Nova Gaming, the game and subprocesses in its user scope get a greater share of CPU time under contention. The transient scope ends with its processes. Launch opt-in tasks with `nova-run --background -- COMMAND`. Turbo, Gaming and Ultra Lite apply a lower weight than Balanced to those tasks. `nova-run --maintenance -- COMMAND` uses the same limits and returns exit 75 if a gaming scope is active, allowing the caller to retry later. APT and critical system services run outside this mechanism.
 
-Profiles use relative user cgroup CPU weights and process niceness. Their effect depends on CPU contention and placement in the cgroup hierarchy. They leave GPU clocks, CPU governors, and power limits under kernel control.
+Profiles use relative user cgroup CPU weights and process niceness. Their effect depends on CPU contention and placement in the cgroup hierarchy. Supported workloads can request temporary hardware power holds through the system Power Profiles service. See [performance and benchmarks](../PERFORMANCE.md).
 
 ## Optional applications
 

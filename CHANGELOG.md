@@ -2,6 +2,8 @@
 
 ## 0.1.0 Alpha · first release target
 
+- Added bounded ZRAM, an on-demand Performance Center, reversible workload profiles, package size reports, and a Linux guest benchmark.
+
 - Added the Nova system app suite with native KDE tools, Firefox ESR, branded launchers, shared icons, file associations, and on-demand signed Debian updates.
 
 - Added Nova Quick Settings, independent appearance controls, an Ultra Lite appearance preset, and desktop shortcuts for new users.

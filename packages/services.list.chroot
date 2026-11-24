@@ -8,3 +8,4 @@ pipewire-audio
 wireplumber
 plasma-pa
 alsa-utils
+power-profiles-daemon

@@ -124,6 +124,9 @@ done
 for input in launchers.tsv brand-launchers.awk; do
     install -Dm0644 "$ROOT/apps/$input" "$tree/usr/lib/novaos/$input"
 done
+install -Dm0644 "$ROOT/apps/Performance.qml" "$tree/usr/lib/novaos/Performance.qml"
+install -Dm0755 "$ROOT/apps/nova-metrics.py" "$tree/usr/lib/novaos/nova-metrics.py"
+install -Dm0755 "$ROOT/scripts/benchmark-guest.py" "$tree/usr/bin/nova-benchmark"
 for entry in "$ROOT/apps/"*.desktop; do
     install -Dm0644 "$entry" "$tree/usr/share/applications/$(basename "$entry")"
 done
@@ -158,9 +161,9 @@ mkdir -p "$DEST"
 install -m0644 "$ARTIFACT.hybrid.iso" "$DEST/$ARTIFACT.iso"
 install -m0644 "$ARTIFACT.packages" "$DEST/$ARTIFACT.packages"
 install -m0644 reports/installed-packages.tsv reports/background-services.tsv \
-    reports/performance-benchmark.json "$DEST/"
+    reports/package-sizes.tsv reports/performance-benchmark.json "$DEST/"
 dpkg-query -W -f='${Package} \t${Version}\n' live-build debootstrap xorriso > "$DEST/build-tools.tsv"
 cd "$DEST"
 sha256sum "$ARTIFACT.iso" "$ARTIFACT.packages" build-tools.tsv \
-    installed-packages.tsv background-services.tsv performance-benchmark.json > SHA256SUMS
+    installed-packages.tsv background-services.tsv package-sizes.tsv performance-benchmark.json > SHA256SUMS
 printf 'Verified artifacts: %s\n' "$DEST"

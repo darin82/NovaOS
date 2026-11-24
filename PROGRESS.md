@@ -1,5 +1,12 @@
 # NovaOS progress
 
+## Phase 4 · Performance
+
+- Configured bounded ZRAM swap and size-ranked installed package reports. Moved the dedicated 7-Zip CLI out of the direct package list and retained Ark's libarchive backend.
+- Added an on-demand QML Performance Center, hardware power holds, reversible low-effects profiles, and optional GameMode integration. Existing essential services and package gates remain in place.
+- Added Linux guest benchmarking and a baseline table in PERFORMANCE.md. Actual boot, memory, application startup, hardware metrics, and guest profile restoration remain pending ISO builds and VirtualBox tests.
+- Local source, profile and restoration fixtures, launcher tests, desktop tests, Python compilation and workflow lint passed. No guest metrics were collected.
+
 ## Phase 3 · System applications
 
 - Integrated the ten Nova launchers, MIME defaults, terminal palettes, editor autosave for named files, and on-demand signed APT updates. Upstream desktop IDs and package attribution are retained.

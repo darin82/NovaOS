@@ -21,6 +21,7 @@ def main(root, reports):
     inventory = reports / "installed-packages.tsv"
     rows = inventory.read_text(encoding="utf-8").splitlines()[1:]
     inventory_names = set()
+    sizes = []
     annotated = ["package\tversion\tsource\tsection\tinstalled_kib\tselection"]
     violations = []
     for row in rows:
@@ -28,6 +29,9 @@ def main(root, reports):
         inventory_names.add(package)
         selection = "allowlist" if package in selected else "Debian base or dependency"
         annotated.append(f"{row}\t{selection}")
+        raw_size = row.rsplit("\t", 1)[-1]
+        if raw_size.isdecimal():
+            sizes.append((int(raw_size), package))
         if any(rule.search(package) for rule in packages):
             violations.append(f"Excluded package: {package}")
     for package in sorted(selected - inventory_names):
@@ -51,6 +55,11 @@ def main(root, reports):
             violations.append(f"Excluded startup entry: {scope}/{unit} ({state})")
 
     inventory.write_text("\n".join(annotated) + "\n", encoding="utf-8")
+    (reports / "package-sizes.tsv").write_text(
+        "package\tinstalled_kib\n"
+        + "".join(f"{name}\t{size}\n" for size, name in sorted(sizes, reverse=True))
+        + f"TOTAL_KNOWN\t{sum(size for size, _ in sizes)}\n"
+        + f"PACKAGES_WITHOUT_SIZE\t{len(rows) - len(sizes)}\n", encoding="utf-8")
     if violations:
         print("\n".join(violations), file=sys.stderr)
         raise SystemExit(1)

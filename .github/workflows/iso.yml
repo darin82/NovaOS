@@ -19,6 +19,7 @@ jobs:
       - run: python3 tests/validate-source.py
       - run: python3 tests/test-zero-bloat.py
       - run: python3 tests/test-apps.py
+      - run: python3 scripts/benchmark-guest.py --help
       - run: node tests/test-desktop.mjs
 
   iso:

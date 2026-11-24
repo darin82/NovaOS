@@ -1,7 +1,7 @@
 [Desktop Entry]
 Type=Application
-Name=Nova Performance
-Comment=Choose a workload profile
-Exec=nova-profile choose
-Icon=preferences-system-performance
+Name=Nova Performance Center
+Comment=System metrics and workload profiles
+Exec=env QT_QUICK_CONTROLS_STYLE=org.kde.desktop qml6 /usr/lib/novaos/Performance.qml
+Icon=nova-monitor
 Categories=Settings;System;

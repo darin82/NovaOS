@@ -35,6 +35,21 @@ set_transparency() {
 
 case "${1:-status}:${2:-}" in
     status:) ;;
+    snapshot:)
+        flags=$(status)
+        factor=$(kreadconfig6 --file kdeglobals --group KDE --key AnimationDurationFactor --default 0.75)
+        printf '%s %s\n' "${flags% *}" "$factor"
+        exit 0
+        ;;
+    restore:*)
+        [ "$#" -eq 4 ] || exit 2
+        case "$2:$3" in true:true|false:true|true:false|false:false) ;; *) exit 2 ;; esac
+        case "$4" in ''|*[!0-9.]*) exit 2 ;; esac
+        set_transparency "$3"; set_blur "$2"; set_motion "$4"; reconfigure
+        ;;
+    eco:)
+        set_blur false; set_motion 0.5; reconfigure
+        ;;
     blur:on) set_blur true; reconfigure ;;
     blur:off) set_blur false; reconfigure ;;
     transparency:on) set_transparency true ;;

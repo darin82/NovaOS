@@ -7,3 +7,4 @@ user-setup
 sudo
 ca-certificates
 locales
+systemd-zram-generator

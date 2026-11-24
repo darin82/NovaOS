@@ -26,22 +26,35 @@ fi
 weight=100
 niceness=0
 scope=workload
+power=
 case "$profile" in
     balanced) ;;
-    turbo) weight=250 ;;
+    turbo) weight=250; power=performance ;;
     gaming)
         if [ "$kind" = game ]; then
             scope=game
             weight=800
+            if command -v gamemoderun >/dev/null 2>&1; then
+                set -- gamemoderun "$@"
+            fi
         fi
         ;;
-    eco) weight=60; niceness=5 ;;
-    ultra-lite) weight=25; niceness=12 ;;
+    eco) weight=60; niceness=5; power=power-saver ;;
+    ultra-lite) weight=25; niceness=12; power=power-saver ;;
 esac
 
 case "$kind" in
-    background|maintenance) weight=15; niceness=10 ;;
+    background|maintenance)
+        weight=15; niceness=10; power=
+        case "$profile" in turbo|gaming|ultra-lite) weight=5; niceness=15 ;; esac
+        ;;
 esac
+
+if [ -n "$power" ] && command -v powerprofilesctl >/dev/null 2>&1 &&
+    powerprofilesctl list 2>/dev/null | grep -Eq "^[[:space:]*]*$power:"; then
+    # The daemon releases the hold when the launcher exits, including on failure.
+    set -- powerprofilesctl launch --profile "$power" --reason 'Nova workload' -- "$@"
+fi
 
 exec systemd-run --user --scope --quiet --slice=app.slice \
     --unit="nova-$scope-$$.scope" --property="CPUWeight=$weight" \

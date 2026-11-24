@@ -1,2 +1,3 @@
 # Prohibited default startup and scheduled work. Activation-on-demand units are inventoried.
 (?i)(akregator|baloo|onedrive|dropbox|microsoft-edge|outlook|libreoffice|onlyoffice|discord|slack|telegram|electron|steam|gamemode|ollama|llama[-_]?cpp|localai|clamav|plasma-welcome|packagekit|discover-notifier|appstream-cache)
+^power-profiles-daemon\.service(?:\s|$)

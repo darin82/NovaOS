@@ -36,6 +36,7 @@ Start with EFI disabled to test BIOS. Power off the test VM, enable EFI with Sec
 - Open Nova Performance and select each profile. For testing Gaming, run `nova-run --game -- sleep 30` in one terminal. In a second terminal, locate the active unit with `systemctl --user list-units 'nova-game-*.scope'` and check its `CPUWeight` using `systemctl --user show -p CPUWeight UNIT`. Confirm weight 800, and that `nova-run --maintenance -- true` exits 75 while the scope is active and succeeds after it exits.
 - Open Nova Store and confirm LibreOffice is offered for install. With network available, install and remove it in the guest and confirm it is absent again.
 - Record three cold boots from GRUB selection to a responsive desktop, along with VM settings and the release benchmark file.
+- Check `swapon --show` for ZRAM, open and close the Performance Center, and confirm Eco → Ultra Lite → Balanced restores the previous look. Run `nova-benchmark --label optimized` from Konsole. See [the comparison procedure](../PERFORMANCE.md).
 - Record BIOS and UEFI results, VirtualBox version, ISO SHA-256, and any issues in PROGRESS.md.
 
 If the display stays black, collect `journalctl -b -u sddm`, `cat /var/log/live/config.log`, and `~/.local/share/sddm/wayland-session.log` when accessible from a guest TTY. The GRUB **Console diagnostics** entry boots to a login prompt. Sign in as `nova` with the Debian live-session password `live`. Try the alternate VMSVGA 3D setting in the test VM and report the setting used.
