@@ -1,0 +1,30 @@
+# VirtualBox live-boot test
+
+Use a new **NovaOS Alpha Test** VM. If you already have a NovaOS VM with data, keep it separate. Only the downloaded ISO is required.
+
+## Verify and attach the ISO
+
+In PowerShell, from the extracted artifact directory, compare:
+
+```powershell
+Get-FileHash -Algorithm SHA256 .\novaos-0.1.0-alpha-amd64.iso
+Get-Content .\SHA256SUMS
+```
+
+Create a VM with Type Linux and Version Debian (64-bit). Skip unattended installation and choose **Do Not Add a Virtual Hard Disk**. Set 2 vCPUs and 4 GB RAM. Under **Display**, start with **VMSVGA**, 128 MB video memory, and 3D acceleration disabled. Enable network adapter 1 with **NAT**. Enable audio output with the **Intel HD Audio** controller. Attach the verified ISO to a virtual optical drive and put Optical first in boot order.
+
+Start with EFI disabled to test BIOS. Power off the test VM, enable EFI with Secure Boot disabled, and repeat from a cold boot. [Oracle VirtualBox manual](https://www.virtualbox.org/manual/)
+
+## Acceptance checklist
+
+- GRUB shows the NovaOS 0.1.0 Alpha menu. Select **Start live desktop**.
+- The guest reaches the Plasma desktop without a login prompt. Check the Midnight Horizon wallpaper, branded launcher, centered panel, and Nova Midnight colors.
+- Open Konsole and verify `echo "$XDG_SESSION_TYPE"` returns `wayland`. Check `grep -E '^(PRETTY_NAME|ID)=' /etc/os-release`.
+- Open Firefox ESR and load an HTTPS page over NAT. Run `nmcli device status` and verify the Ethernet adapter is connected.
+- Open Dolphin and browse the live home directory.
+- Run `wpctl status` and check for a playback sink. Use the speaker test in Plasma's Sound settings and confirm audio is audible on the host.
+- Open System Settings → Colors, apply Nova Daybreak, then switch back to Nova Midnight.
+- Run `flatpak --version`. To check signed Debian mirrors, run `sudo apt-get update` **inside the guest only**, with approval if required.
+- Record BIOS and UEFI results, VirtualBox version, ISO SHA-256, and any issues in PROGRESS.md.
+
+If the display stays black, collect `journalctl -b -u sddm`, `cat /var/log/live/config.log`, and `~/.local/share/sddm/wayland-session.log` when accessible from a guest TTY. The GRUB **Console diagnostics** entry boots to a login prompt. Sign in as `nova` with the Debian live-session password `live`. Try the alternate VMSVGA 3D setting in the test VM and report the setting used.

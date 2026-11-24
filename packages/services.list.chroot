@@ -1,0 +1,10 @@
+network-manager
+plasma-nm
+wpasupplicant
+wireless-regdb
+firmware-iwlwifi
+firmware-realtek
+pipewire-audio
+wireplumber
+plasma-pa
+alsa-utils

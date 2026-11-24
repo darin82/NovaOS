@@ -1,0 +1,55 @@
+name: NovaOS ISO
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  source:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 tests/validate-source.py
+      - run: node --check desktop/nova-layout.js
+
+  iso:
+    if: github.event_name == 'workflow_dispatch' || startsWith(github.ref, 'refs/tags/v')
+    needs: source
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build Debian toolchain
+        run: docker build -f build/container.Dockerfile -t novaos-build .
+      - name: Compile and verify NovaOS
+        shell: bash
+        run: |
+          mkdir -p dist
+          docker run --rm --privileged \
+            --env GITHUB_REF_NAME --env GITHUB_REF_TYPE \
+            --mount "type=bind,src=$PWD,dst=/src,readonly" \
+            --mount "type=bind,src=$PWD/dist,dst=/src/dist" \
+            novaos-build sh scripts/build-iso.sh 2>&1 | tee dist/build.log
+      - name: Upload verified ISO
+        uses: actions/upload-artifact@v4
+        with:
+          name: novaos-amd64
+          path: dist/novaos-*/*
+          if-no-files-found: error
+          retention-days: 14
+          compression-level: 0
+      - name: Upload build log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: novaos-build-log
+          path: dist/build.log
+          if-no-files-found: ignore
+          retention-days: 14

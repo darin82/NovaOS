@@ -1,0 +1,24 @@
+source /boot/grub/config.cfg
+
+unset theme
+set default=0
+set timeout=8
+set menu_color_normal=light-cyan/black
+set menu_color_highlight=white/blue
+
+menuentry "NovaOS @NOVA_VERSION@ Alpha - Start live desktop" --hotkey=n {
+    linux @KERNEL_LIVE@ @APPEND_LIVE@
+    initrd @INITRD_LIVE@
+}
+
+menuentry "NovaOS @NOVA_VERSION@ Alpha - Console diagnostics" --hotkey=c {
+    linux @KERNEL_LIVE@ @APPEND_LIVE@ systemd.unit=multi-user.target live-config.noautologin
+    initrd @INITRD_LIVE@
+}
+
+if @ENABLE_VERIFY_CHECKSUMS@; then
+    menuentry "Verify live media" {
+        linux @KERNEL_LIVE@ @APPEND_VERIFY_CHECKSUMS@
+        initrd @INITRD_LIVE@
+    }
+fi

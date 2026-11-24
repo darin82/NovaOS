@@ -1,0 +1,17 @@
+# NovaOS progress
+
+## 0.1.0 Alpha · Phase 1
+
+The source repository, GitHub Actions workflow, desktop branding, package lists, and VirtualBox procedure are implemented. The image targets live boot only on amd64.
+
+| Check | Status |
+| --- | --- |
+| Source and package validation | Passed on Windows using portable Python, POSIX shell syntax checks, Node, and actionlint. Explicit packages checked against the Debian amd64 archive indexes. |
+| GitHub Linux ISO build | Pending workflow run. This repository has no configured GitHub remote. |
+| ISO, checksum, and resolved package manifest | Pending successful Linux build. |
+| BIOS and UEFI boot | Pending ISO artifact and diskless VM test. |
+| Wayland, desktop appearance, network, audio, and apps | Pending VM acceptance test. |
+
+The Windows workspace contains the repository. No Windows settings were changed. The existing paused NovaOS VM was inspected read-only and remains outside this test plan.
+
+Start the first build through Actions once the repository is published to an authorized GitHub destination. Record the workflow URL, artifact checksum, and BIOS and UEFI results here. The build uses Debian archive updates rather than a frozen snapshot to preserve security fixes.

@@ -1,0 +1,9 @@
+debian-archive-keyring
+systemd-sysv
+live-boot
+live-config
+live-config-systemd
+user-setup
+sudo
+ca-certificates
+locales

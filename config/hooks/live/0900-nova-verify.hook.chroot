@@ -1,0 +1,27 @@
+#!/bin/sh
+set -eu
+
+test -r /usr/share/wayland-sessions/plasma.desktop
+test -x /usr/bin/startplasma-wayland
+test -x /usr/lib/live/config/0086-nova-sddm
+test -r /usr/share/color-schemes/NovaMidnight.colors
+test -r /usr/share/wallpapers/NovaOS/contents/images/1920x1080.svg
+test -r /usr/share/desktop-base/nova-logo.svg
+
+for executable in firefox-esr konsole dolphin flatpak nmcli wpctl; do
+    command -v "$executable" >/dev/null
+done
+
+# Enable network management and make the display manager the boot target.
+systemctl enable NetworkManager.service sddm.service
+systemctl set-default graphical.target
+
+# Keep the base-files copy at /usr/lib/os-release for upstream maintenance.
+if [ -L /etc/os-release ]; then
+    rm /etc/os-release
+fi
+install -m 0644 /usr/lib/novaos/os-release /etc/os-release
+grep -q 'trixie-security' /etc/apt/sources.list /etc/apt/sources.list.d/* 2>/dev/null || {
+    echo 'Debian security repository missing from chroot APT configuration' >&2
+    exit 1
+}
