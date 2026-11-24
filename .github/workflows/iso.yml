@@ -18,6 +18,7 @@ jobs:
       - uses: actions/checkout@v4
       - run: python3 tests/validate-source.py
       - run: python3 tests/test-zero-bloat.py
+      - run: python3 tests/test-apps.py
       - run: node tests/test-desktop.mjs
 
   iso:

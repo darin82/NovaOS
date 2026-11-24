@@ -2,6 +2,8 @@
 
 ## 0.1.0 Alpha · first release target
 
+- Added the Nova system app suite with native KDE tools, Firefox ESR, branded launchers, shared icons, file associations, and on-demand signed Debian updates.
+
 - Added Nova Quick Settings, independent appearance controls, an Ultra Lite appearance preset, and desktop shortcuts for new users.
 
 - Reduced the default app set and disabled file indexing and sponsored browser content.

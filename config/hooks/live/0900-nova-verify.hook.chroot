@@ -9,22 +9,26 @@ test -r /usr/share/wallpapers/NovaOS/contents/images/1920x1080.svg
 test -r /usr/share/desktop-base/nova-logo.svg
 test -r /usr/lib/x86_64-linux-gnu/qt6/plugins/kf6/kio/kio_filenamesearch.so
 
-for executable in firefox-esr konsole dolphin flatpak nmcli wpctl kdialog Xorg \
-    spectacle plasma-systemmonitor plasma-apply-colorscheme kreadconfig6 kwriteconfig6 qdbus6 nova-appearance; do
+for executable in flatpak nmcli wpctl kdialog Xorg plasma-apply-colorscheme \
+    kreadconfig6 kwriteconfig6 qdbus6 nova-appearance nova-update apt-get apt-cache; do
     command -v "$executable" >/dev/null
 done
-for entry in systemsettings.desktop org.kde.plasma-systemmonitor.desktop org.kde.spectacle.desktop; do
-    test -r "/usr/share/applications/$entry"
-done
-
-# Local desktop entries retain upstream IDs and actions and route menu launches
-# through the selected workload profile. D-Bus activation bypasses Exec.
+# Retain upstream desktop IDs, MIME types and actions, including native shortcuts.
 install -d -m 0755 /usr/local/share/applications
-for entry in firefox-esr.desktop org.kde.dolphin.desktop org.kde.konsole.desktop; do
-    sed -e 's/^Exec=/Exec=nova-run -- /' -e 's/^DBusActivatable=true$/DBusActivatable=false/' \
-        "/usr/share/applications/$entry" > "/usr/local/share/applications/$entry"
-    grep -q '^Exec=nova-run -- ' "/usr/local/share/applications/$entry"
-done
+while IFS='|' read -r entry name icon executable visibility; do
+    case "$entry" in ''|'#'*) continue ;; esac
+    command -v "$executable" >/dev/null
+    managed=0
+    monitor=0
+    case "$executable" in firefox-esr|dolphin|konsole) managed=1 ;; esac
+    case "$executable" in plasma-systemmonitor) monitor=1 ;; esac
+    override="/usr/local/share/applications/$entry"
+    awk -v name="$name" -v icon="$icon" -v visibility="$visibility" -v managed="$managed" -v monitor="$monitor" \
+        -f /usr/lib/novaos/brand-launchers.awk "/usr/share/applications/$entry" > "$override"
+    grep -Fxq "Name=$name" "$override"
+    grep -q '^Exec=' "$override"
+done < /usr/lib/novaos/launchers.tsv
+test -r /usr/share/applications/org.novaos.Update.desktop
 
 # Enable network management and make the display manager the boot target.
 systemctl enable NetworkManager.service sddm.service

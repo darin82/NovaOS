@@ -2,6 +2,7 @@
     "policies": {
         "DisableFirefoxStudies": true,
         "DisableTelemetry": true,
+        "NoDefaultBookmarks": true,
         "FirefoxHome": {
             "Stories": false,
             "SponsoredStories": false,

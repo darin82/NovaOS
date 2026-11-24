@@ -11,3 +11,11 @@ Use [the architecture requirements](docs/ARCHITECTURE.md) for package policy, st
 - Keep paths, Bash/POSIX scripts, YAML, and Plasma scripts LF-terminated. Run source validation before handing off.
 - Treat a successful source check, ISO inspection, and VM boot as different evidence. Record the exact workflow run and VirtualBox settings once available.
 - Update PROGRESS.md whenever build or boot status changes. Update CHANGELOG.md for user-visible changes.
+
+## Phase workflow
+
+- Initially read only AGENTS.md and PROGRESS.md, then run `git status --short`.
+- Use `rg --files` and targeted `rg -n` searches. Read only files relevant to the phase.
+- Reuse working code, dependencies, and design tokens. Make incremental edits.
+- Keep logs concise, avoid duplicate builds and tool calls, and run targeted tests before final validation.
+- Report changes, tests, blockers and the next command in at most 150 words unless the user sets another limit.

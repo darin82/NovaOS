@@ -3,5 +3,5 @@
 ^(chromium|google-chrome|konqueror|epiphany-browser|thunderbird|evolution|kmail|kontact|akonadi|nextcloud-desktop|dropbox)([-.].*)?$
 ^(electron[0-9]*|discord|slack|telegram-desktop|signal-desktop|whatsapp|element-desktop|zoom|skypeforlinux)([-.].*)?$
 ^(steam|lutris|heroic|gamescope|gamemode|gamemoded|ollama|llama-cpp|localai|clamav|akregator|rssguard|liferea)([-.].*)?$
-^(task-kde-desktop|live-task-kde|kde-full|kde-standard|kde-plasma-desktop|kde-applications|kdegames|gnome-games|ark|kate|plasma-discover)([-.].*)?$
+^(task-kde-desktop|live-task-kde|kde-full|kde-standard|kde-plasma-desktop|kde-applications|kdegames|gnome-games|kwrite|plasma-discover)([-.].*)?$
 ^(amazon-shopping|amazon-webapp|shopzilla|xbox|xbox-cloud-gaming|news-feed|promo-games|trial-antivirus)([-.].*)?$

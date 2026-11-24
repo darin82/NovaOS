@@ -25,6 +25,10 @@ Start with EFI disabled to test BIOS. Power off the test VM, enable EFI with Sec
 - Open Konsole and verify `echo "$XDG_SESSION_TYPE"` returns `wayland`. Check `grep -E '^(PRETTY_NAME|ID)=' /etc/os-release`.
 - Open Firefox ESR and load an HTTPS page over NAT. Run `nmcli device status` and verify the Ethernet adapter is connected.
 - Open Dolphin and browse the live home directory.
+- Launch the ten Nova apps from Kickoff. In Nova Files test tabs, Places, previews, trash, archive extraction, and a test USB device if passthrough is available. In Nova Settings search for Display, Sound, Network, Bluetooth, Power, Accessibility and Autostart.
+- In Nova Monitor check process controls and CPU, RAM, disks and network. Check GPU sensors on supported hardware. Right-click its launcher and open Startup Applications. In Nova Terminal check tabs and both Nova color schemes.
+- In Nova Capture try region capture, copy to clipboard, and Wayland recording where available. In Nova Notes edit a named test file, wait for autosave, and check syntax highlighting. Open a sample movie with subtitles in Nova Media and try all three Nova Calculator modes.
+- In Nova Update run the signed refresh and preview, then inspect an installed package. Review the APT prompt before applying changes. Repeat without networking to check the error path.
 - Create a file with a distinctive name in the live home directory. From Dolphin, use Find to search by filename and confirm it appears. Check that `systemctl --user is-active kde-baloo.service` reports inactive.
 - Run `wpctl status` and check for a playback sink. Use the speaker test in Plasma's Sound settings and confirm audio is audible on the host.
 - Open System Settings → Colors, apply Nova Daybreak, then switch back to Nova Midnight.

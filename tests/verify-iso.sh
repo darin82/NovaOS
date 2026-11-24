@@ -67,6 +67,13 @@ for asset in \
     etc/skel/.config/kglobalshortcutsrc \
     etc/xdg/kwinrc \
     usr/bin/nova-appearance \
+    usr/bin/nova-update \
+    usr/share/applications/org.novaos.Update.desktop \
+    usr/share/konsole/Nova.profile \
+    usr/share/konsole/Nova.colorscheme \
+    usr/local/share/applications/org.kde.haruna.desktop \
+    usr/local/share/applications/org.kde.kate.desktop \
+    usr/local/share/applications/org.kde.kcalc.desktop \
     usr/share/wayland-sessions/plasma.desktop
 do
     unsquashfs -cat "$WORK/filesystem.squashfs" "$asset" > "$WORK/guest-file"

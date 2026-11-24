@@ -1,5 +1,11 @@
 # NovaOS progress
 
+## Phase 3 · System applications
+
+- Integrated the ten Nova launchers, MIME defaults, terminal palettes, editor autosave for named files, and on-demand signed APT updates. Upstream desktop IDs and package attribution are retained.
+- Added nine direct packages for editing, media, calculation, archives, Bluetooth and power settings. Kate is the sole text editor, Ark is a file handler, and Haruna's optional download helper is excluded by the existing no-recommends policy.
+- Local source, launcher, update failure-path, Zero Bloat, desktop fixture and workflow checks passed. Debian package metadata was inspected. ISO resolution, real launcher activation, GPU sensors/decoding, screen recording and hardware-dependent settings still need guest verification.
+
 ## Phase 2 · Desktop experience
 
 - Implemented the native Nova Quick Settings applet, exact dark palette, light scheme, Breeze-based symbolic icons and rounded decorations, and new-user desktop shortcuts.

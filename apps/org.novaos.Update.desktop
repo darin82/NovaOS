@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=Nova Update
+Comment=Review signed Debian software updates
+Exec=nova-update
+Icon=nova-update
+Categories=System;PackageManager;

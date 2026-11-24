@@ -87,6 +87,9 @@ for theme in NovaMidnight NovaDaybreak; do
     fi
     icons="$tree/usr/share/icons/$theme"
     install -Dm0644 "$ROOT/desktop/icons/quick-settings.svg" "$icons/scalable/actions/nova-quick-settings.svg"
+    for icon in "$ROOT/desktop/icons/"nova-*.svg; do
+        install -Dm0644 "$icon" "$icons/scalable/actions/$(basename "$icon")"
+    done
     cat > "$icons/index.theme" <<EOF
 [Icon Theme]
 Name=$theme
@@ -109,8 +112,17 @@ install -Dm0644 "$ROOT/apps/mimeapps.list" "$tree/etc/xdg/mimeapps.list"
 install -Dm0644 "$ROOT/desktop/baloofilerc" "$tree/etc/xdg/baloofilerc"
 install -d -m 0755 "$tree/etc/systemd/user"
 ln -s /dev/null "$tree/etc/systemd/user/kde-baloo.service"
-for app in nova-profile nova-run nova-store nova-appearance; do
+for rc in dolphinrc katerc harunarc konsolerc; do
+    install -Dm0644 "$ROOT/desktop/$rc" "$tree/etc/xdg/$rc"
+done
+for profile in "$ROOT/desktop/konsole/"*; do
+    install -Dm0644 "$profile" "$tree/usr/share/konsole/$(basename "$profile")"
+done
+for app in nova-profile nova-run nova-store nova-appearance nova-update; do
     install -Dm0755 "$ROOT/apps/$app" "$tree/usr/bin/$app"
+done
+for input in launchers.tsv brand-launchers.awk; do
+    install -Dm0644 "$ROOT/apps/$input" "$tree/usr/lib/novaos/$input"
 done
 for entry in "$ROOT/apps/"*.desktop; do
     install -Dm0644 "$entry" "$tree/usr/share/applications/$(basename "$entry")"

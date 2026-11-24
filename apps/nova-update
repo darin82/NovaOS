@@ -1,0 +1,49 @@
+#!/bin/sh
+set -eu
+
+signed_apt() {
+    sudo apt-get \
+        -o APT::Get::AllowUnauthenticated=false \
+        -o Acquire::AllowInsecureRepositories=false \
+        -o Acquire::AllowDowngradeToInsecureRepositories=false "$@"
+}
+
+case "${1:-choose}" in
+    choose)
+        action=$(kdialog --title 'Nova Update' --menu 'Software updates' \
+            check 'Refresh signed package lists and preview updates' \
+            info 'Inspect a package' \
+            apply 'Review and install updates') || exit 0
+        if [ "$action" = info ]; then
+            package=$(kdialog --title 'Nova Update' --inputbox 'Debian package name') || exit 0
+            exec konsole --hold -e /usr/bin/nova-update info "$package"
+        fi
+        exec konsole --hold -e /usr/bin/nova-update "$action"
+        ;;
+    check|apply)
+        if ! signed_apt -o APT::Update::Error-Mode=any update; then
+            echo 'Could not refresh signed package lists. No upgrades were started.' >&2
+            exit 1
+        fi
+        if [ "$1" = check ]; then
+            apt-get --simulate --with-new-pkgs --no-remove upgrade
+        else
+            printf '%s\n' 'Review the package changes at the APT prompt. Live-session changes are temporary.'
+            if ! signed_apt --with-new-pkgs --no-remove upgrade; then
+                echo 'Upgrade did not complete. Review the APT diagnostics above.' >&2
+                exit 1
+            fi
+        fi
+        ;;
+    info)
+        package=${2:-}
+        case "$package" in
+            ''|[!a-z0-9]*|*[!a-z0-9+.-]*)
+                echo 'Enter a Debian package name.' >&2
+                exit 2 ;;
+        esac
+        apt-cache show --no-all-versions "$package"
+        apt-cache policy "$package"
+        ;;
+    *) echo 'Usage: nova-update [check|apply|info PACKAGE]' >&2; exit 2 ;;
+esac

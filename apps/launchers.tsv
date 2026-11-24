@@ -1,0 +1,11 @@
+# Desktop ID|Nova name|Icon|Executable|Visibility
+org.kde.dolphin.desktop|Nova Files|nova-files|dolphin|show
+systemsettings.desktop|Nova Settings|nova-settings|systemsettings|show
+org.kde.plasma-systemmonitor.desktop|Nova Monitor|nova-monitor|plasma-systemmonitor|show
+org.kde.konsole.desktop|Nova Terminal|nova-terminal|konsole|show
+org.kde.spectacle.desktop|Nova Capture|nova-capture|spectacle|show
+org.kde.kate.desktop|Nova Notes|nova-notes|kate|show
+org.kde.haruna.desktop|Nova Media|nova-media|haruna|show
+org.kde.kcalc.desktop|Nova Calculator|nova-calculator|kcalc|show
+firefox-esr.desktop|Nova Browser|nova-browser|firefox-esr|show
+org.kde.ark.desktop|Ark|system-file-manager|ark|hide

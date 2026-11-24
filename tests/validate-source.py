@@ -107,6 +107,7 @@ def main():
         "apps/nova-run",
         "apps/nova-store",
         "apps/nova-appearance",
+        "apps/nova-update",
     ]
     shell = shutil.which("sh")
     for path in shell_files:
