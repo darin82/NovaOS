@@ -1,0 +1,7 @@
+[Unit]
+Description=Check the existing Debian security update cache
+ConditionKernelCommandLine=!boot=live
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/nova-update-notify

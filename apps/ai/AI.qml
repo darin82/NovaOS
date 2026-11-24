@@ -28,6 +28,8 @@ ApplicationWindow {
     property bool regenerate: false
     property var pendingSend: null
     readonly property bool generating: job !== ""
+    Nova.NovaStyle { id: tokens }
+    palette.highlight: tokens.accent
 
     function config() {
         return { provider: provider.currentValue || "ollama", endpoint: endpointField.text,
@@ -146,7 +148,7 @@ ApplicationWindow {
     header: ToolBar {
         RowLayout {
             anchors.fill: parent
-            anchors.margins: 6
+            anchors.margins: tokens.compact
             ToolButton { text: "Chats"; checkable: true; checked: ai.sidebar; onClicked: ai.sidebar = checked }
             Button { text: "New"; enabled: !ai.generating && !backend.busy; onClicked: ai.newChat() }
             Button { text: "Actions"; enabled: !backend.busy; onClicked: backend.invoke("actions", null) }
@@ -160,7 +162,7 @@ ApplicationWindow {
 
     RowLayout {
         anchors.fill: parent
-        anchors.margins: 10
+        anchors.margins: tokens.gutter
 
         ColumnLayout {
             visible: ai.sidebar
@@ -179,7 +181,7 @@ ApplicationWindow {
                 Layout.fillHeight: true
                 clip: true
                 model: ai.chats
-                delegate: ItemDelegate {
+                delegate: Nova.NovaCard {
                     required property var modelData
                     text: modelData.title
                     width: historyList.width
@@ -200,13 +202,7 @@ ApplicationWindow {
         ColumnLayout {
             Layout.fillWidth: true
             Layout.fillHeight: true
-            Label {
-                Layout.fillWidth: true
-                visible: text !== ""
-                text: ai.errorText
-                textFormat: Text.PlainText
-                wrapMode: Text.Wrap
-            }
+            Nova.NovaNotice { text: ai.errorText }
             ListView {
                 id: transcript
                 Layout.fillWidth: true

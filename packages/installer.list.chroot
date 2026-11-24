@@ -1,0 +1,15 @@
+calamares
+calamares-settings-debian
+libqt5svg5
+squashfs-tools
+grub2-common
+grub-pc-bin
+grub-efi-amd64-bin
+efibootmgr
+cryptsetup-initramfs
+btrfs-progs
+smartmontools
+pciutils
+python3-apt
+libnotify-bin
+kscreen

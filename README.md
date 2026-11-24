@@ -2,7 +2,7 @@
 
 NovaOS 0.1.0 Alpha is the first live-media release target for a Debian 13 (Trixie) amd64 distribution. The image configuration uses the Debian Linux kernel, systemd, KDE Plasma 6 on Wayland, and SDDM live-session login. Nova Midnight is the default color scheme. Nova Daybreak is available in System Settings under Colors.
 
-The live image targets BIOS and UEFI with Secure Boot disabled. It runs from virtual optical media. This alpha has no disk installer and live-session changes are temporary.
+The live image targets BIOS and UEFI with Secure Boot disabled. It runs from virtual optical media and includes the NovaOS Calamares installer. Live-session changes are temporary. See [installation tests](docs/VIRTUALBOX.md).
 
 The default desktop includes Firefox ESR, Konsole, and Dolphin. **Nova Performance** selects one of five workload profiles. **Nova Store** offers LibreOffice as an optional per-user Flatpak. See the [architecture requirements](docs/ARCHITECTURE.md) for package policy, startup rules, and profile behavior.
 

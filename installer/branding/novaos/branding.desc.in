@@ -1,0 +1,31 @@
+componentName: novaos
+welcomeStyleCalamares: true
+welcomeExpandingLogo: false
+windowExpanding: normal
+windowSize: 830px,590px
+windowPlacement: center
+
+strings:
+  productName: NovaOS
+  shortProductName: NovaOS
+  version: "@VERSION@ Alpha"
+  shortVersion: "@VERSION@"
+  versionedName: "NovaOS @VERSION@ Alpha"
+  shortVersionedName: "NovaOS @VERSION@"
+  bootloaderEntryName: NovaOS
+
+sidebar: widget
+navigation: widget
+images:
+  productLogo: novaos.svg
+  productIcon: novaos.svg
+  productWelcome: wallpaper.svg
+
+slideshow: show.qml
+slideshowAPI: 2
+
+style:
+  SidebarBackground: "#08080C"
+  SidebarText: "#F5F5FA"
+  SidebarTextCurrent: "#F5F5FA"
+  SidebarBackgroundCurrent: "#553493"

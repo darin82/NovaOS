@@ -19,6 +19,8 @@ ApplicationWindow {
     property bool sidebar: true
     property string message: ""
     property bool aiEnabled: false
+    NovaStyle { id: tokens }
+    palette.highlight: tokens.accent
 
     function search(reset) {
         if (reset)
@@ -59,7 +61,7 @@ ApplicationWindow {
     header: ToolBar {
         RowLayout {
             anchors.fill: parent
-            anchors.margins: 6
+            anchors.margins: tokens.compact
             ToolButton { text: "Filters"; checkable: true; checked: store.sidebar; onClicked: store.sidebar = checked }
             TextField {
                 id: query
@@ -76,8 +78,8 @@ ApplicationWindow {
 
     RowLayout {
         anchors.fill: parent
-        anchors.margins: 12
-        spacing: 12
+        anchors.margins: tokens.gutter
+        spacing: tokens.gutter
         ColumnLayout {
             visible: store.sidebar
             Layout.preferredWidth: 155
@@ -107,8 +109,8 @@ ApplicationWindow {
         ColumnLayout {
             Layout.fillWidth: true
             Layout.fillHeight: true
-            Label { text: store.message; textFormat: Text.PlainText; visible: text !== ""; Layout.fillWidth: true; wrapMode: Text.Wrap }
-            ProgressBar { indeterminate: true; visible: bridge.busy; Layout.fillWidth: true }
+            NovaNotice { text: store.message }
+            NovaLoading { visible: bridge.busy }
             ListView {
                 id: results
                 Layout.fillWidth: true
@@ -117,7 +119,7 @@ ApplicationWindow {
                 spacing: 4
                 model: store.entries
                 ScrollBar.vertical: ScrollBar {}
-                delegate: ItemDelegate {
+                delegate: NovaCard {
                     required property var modelData
                     width: results.width
                     text: modelData.name + "   ·   " + modelData.source.toUpperCase()

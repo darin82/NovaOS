@@ -38,7 +38,7 @@ def main():
 
     packages = set()
     lists = sorted((ROOT / "packages").glob("*.list.chroot"))
-    require(len(lists) == 4, "Expected four package lists")
+    require(len(lists) == 5, "Expected five package lists")
     for path in lists:
         for package in read(path.relative_to(ROOT)).splitlines():
             require(re.fullmatch(r"[a-z0-9][a-z0-9+.-]+", package), f"Bad package name: {package}")
@@ -107,6 +107,8 @@ def main():
         "apps/nova-run",
         "apps/nova-music",
         "apps/ai/nova-ai",
+        "installer/nova-install",
+        "installer/nova-welcome",
         "apps/nova-appearance",
         "apps/nova-update",
     ]

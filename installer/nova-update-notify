@@ -1,0 +1,24 @@
+#!/usr/bin/python3
+"""Notify the desktop user from existing signed APT caches, without refreshing them."""
+from pathlib import Path
+import subprocess
+import apt
+
+
+def main():
+    if "boot=live" in Path("/proc/cmdline").read_text().split():
+        return
+    cache = apt.Cache()
+    count = sum(1 for package in cache if package.is_upgradable and package.candidate and any(
+        origin.trusted and origin.origin == "Debian" and origin.codename == "trixie-security"
+        for origin in package.candidate.origins))
+    reboot = Path("/run/reboot-required").exists()
+    if count or reboot:
+        message = f"{count} security update(s) available from the signed Debian cache."
+        if reboot:
+            message += " A restart is requested."
+        subprocess.run(["notify-send", "--app-name=Nova Update", "Nova Update", message], check=True)
+
+
+if __name__ == "__main__":
+    main()

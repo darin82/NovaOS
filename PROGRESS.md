@@ -1,5 +1,17 @@
 # NovaOS progress
 
+## Phase 9 · Polish
+
+- Added shared QML design components, revised the original wallpaper, and integrated Nova branding across SDDM, lock-screen wallpaper, Plymouth and Calamares.
+- Fixed the Minimal install Music launcher mismatch, added native per-effect settings access, and recorded unresolved issues in BUGS.md.
+- Pending Linux ISO validation, installation, high-DPI hardware testing, and guest measurements. No runtime improvement has been measured.
+- All local fixture suites, workflow lint, Calamares YAML parsing, and the Debian package name audit passed. Reviewed the published Calamares job descriptors and Plymouth assets. The existing paused VM was inspected read-only.
+
+## Phase 8 · Installer and recovery
+
+- Integrated Calamares with Nova branding, explicit partition confirmation, offline base profiles, optional signed package setup, and first-boot Welcome.
+- Added live recovery entry, scoped recovery tools, and update history and notifications. Firmware, encryption, installed boot and recovery remain unverified until disposable VM testing.
+
 ## Phase 7 · Nova AI
 
 - Added an opt-in native assistant with local conversation history, streaming adapters, credential-wallet integration, selected attachments, explicit cloud consent, and previewed system actions.

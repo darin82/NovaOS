@@ -24,6 +24,8 @@ ApplicationWindow {
     property string message: ""
     property string lastPlayed: ""
     property int playlistId: 0
+    NovaStyle { id: tokens }
+    palette.highlight: tokens.accent
 
     function browse(reset) {
         if (reset)
@@ -94,7 +96,7 @@ ApplicationWindow {
         visible: !music.mini
         RowLayout {
             anchors.fill: parent
-            anchors.margins: 6
+            anchors.margins: tokens.compact
             ToolButton { text: "Library"; checkable: true; checked: music.sidebar; onClicked: music.sidebar = checked }
             TextField { id: search; Layout.fillWidth: true; placeholderText: "Songs, albums or artists"; onAccepted: music.browse(true) }
             Button { text: "Search"; enabled: !bridge.busy; onClicked: music.browse(true) }
@@ -105,15 +107,9 @@ ApplicationWindow {
 
     ColumnLayout {
         anchors.fill: parent
-        anchors.margins: 10
+        anchors.margins: tokens.gutter
         spacing: 6
-        Label {
-            visible: text !== ""
-            text: music.message
-            textFormat: Text.PlainText
-            Layout.fillWidth: true
-            wrapMode: Text.Wrap
-        }
+        NovaNotice { text: music.message }
         RowLayout {
             visible: !music.mini
             Layout.fillWidth: true
@@ -156,7 +152,7 @@ ApplicationWindow {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
                 Label { text: music.mode; font.bold: true }
-                ProgressBar { indeterminate: true; visible: bridge.busy && bridge.pending !== "status"; Layout.fillWidth: true }
+                NovaLoading { visible: bridge.busy && bridge.pending !== "status" }
                 ListView {
                     id: tracks
                     Layout.fillWidth: true
@@ -166,7 +162,7 @@ ApplicationWindow {
                     model: music.mode === "Radio" ? music.collection.radio
                          : music.mode === "Queue" ? music.player.queue : music.collection.rows
                     ScrollBar.vertical: ScrollBar {}
-                    delegate: ItemDelegate {
+                    delegate: NovaCard {
                         required property var modelData
                         required property int index
                         width: tracks.width

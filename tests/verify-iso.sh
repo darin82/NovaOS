@@ -73,8 +73,23 @@ for asset in \
     usr/share/novaos/mangohud.conf \
     usr/lib/novaos/Gaming.qml \
     usr/lib/novaos/NovaBridge.qml \
+    usr/lib/novaos/NovaStyle.qml \
+    usr/lib/novaos/NovaNotice.qml \
+    usr/lib/novaos/NovaLoading.qml \
+    usr/lib/novaos/NovaCard.qml \
+    usr/share/sddm/themes/novaos/Main.qml \
+    usr/share/plymouth/themes/novaos/novaos.plymouth \
+    usr/share/plymouth/themes/novaos/watermark.png \
+    etc/xdg/kscreenlockerrc \
     usr/lib/novaos/Music.qml \
     usr/lib/novaos/Store.qml \
+    etc/calamares/settings.conf \
+    etc/calamares/branding/novaos/branding.desc \
+    usr/lib/calamares/modules/nova-install/main.py \
+    usr/share/applications/org.novaos.Install.desktop \
+    usr/bin/nova-recovery \
+    usr/bin/nova-welcome \
+    usr/lib/systemd/user/nova-update-notify.timer \
     usr/lib/novaos/ai/AI.qml \
     usr/lib/novaos/ai/nova-ai \
     usr/lib/novaos/ai/nova-ai.py \

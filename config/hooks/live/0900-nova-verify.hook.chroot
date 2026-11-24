@@ -37,6 +37,20 @@ test -r /usr/share/applications/org.novaos.Update.desktop
 systemctl enable NetworkManager.service sddm.service
 # The vendor D-Bus service can still start this unit when requested by clients.
 systemctl disable power-profiles-daemon.service
+# SMART reads are explicitly invoked by Recovery. No startup drive patrol.
+systemctl disable smartmontools.service
+systemctl --global enable nova-update-notify.timer
+test -r /etc/calamares/settings.conf
+test -r /usr/lib/calamares/modules/nova-install/main.py
+test -r /usr/share/calamares/helpers/calamares-bootloader-config
+# Preserve native password and fallback handling for encrypted boots.
+for asset in /usr/share/plymouth/themes/spinner/*.png; do
+    [ -f "$asset" ] || continue
+    [ "${asset##*/}" != watermark.png ] || continue
+    install -m0644 "$asset" /usr/share/plymouth/themes/novaos/
+done
+plymouth-set-default-theme novaos
+test -r /usr/share/sddm/themes/novaos/Main.qml
 systemctl set-default graphical.target
 
 # Keep the base-files copy at /usr/lib/os-release for upstream maintenance.

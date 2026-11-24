@@ -19,6 +19,8 @@ ApplicationWindow {
     property string boot: ""
     property string error: ""
     property var cpuHistory: []
+    NovaStyle { id: tokens }
+    palette.highlight: tokens.accent
 
     function requestSample() {
         if (!sampling) {
@@ -86,7 +88,7 @@ ApplicationWindow {
 
     ScrollView {
         anchors.fill: parent
-        anchors.margins: 16
+        anchors.margins: tokens.comfortable
         contentWidth: availableWidth
 
         ColumnLayout {
@@ -133,7 +135,7 @@ ApplicationWindow {
                 onPaint: {
                     const context = getContext("2d")
                     context.clearRect(0, 0, width, height)
-                    context.strokeStyle = "#8B5CF6"
+                    context.strokeStyle = tokens.accent
                     context.lineWidth = 2
                     context.beginPath()
                     window.cpuHistory.forEach((value, index) => {
@@ -164,7 +166,7 @@ ApplicationWindow {
                 textFormat: Text.PlainText
                 font.family: "Noto Mono"
             }
-            Label { visible: window.error !== ""; text: window.error }
+            NovaNotice { text: window.error }
         }
     }
 }

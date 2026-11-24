@@ -1,0 +1,16 @@
+#!/bin/sh
+set -eu
+umask 077
+
+if grep -qw boot=live /proc/cmdline; then
+    exit 0
+fi
+state="${XDG_STATE_HOME:-$HOME/.local/state}/novaos"
+mkdir -p "$state"
+if [ "${1:-}" != manual ]; then
+    if ! (set -C; : > "$state/welcome-shown") 2>/dev/null; then
+        exit 0
+    fi
+fi
+export QT_QUICK_CONTROLS_STYLE=org.kde.desktop
+exec qml6 /usr/lib/novaos/Welcome.qml

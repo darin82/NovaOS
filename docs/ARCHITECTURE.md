@@ -4,7 +4,7 @@ NovaOS targets gamers, developers, enthusiasts, and users who want direct contro
 
 ## Package and service policy
 
-- The four lists in `packages/` are the allowlist for directly requested packages. Install essential hardware and session stacks and give every new direct package a rationale. Use signed Debian archives, keep security updates available, and leave automatic dependency recommendations disabled.
+- The five lists in `packages/` are the allowlist for directly requested packages. Install essential hardware and session stacks and give every new direct package a rationale. Use signed Debian archives, keep security updates available, and leave automatic dependency recommendations disabled.
 - Exclude Microsoft Edge, Teams, Facebook, PowerPoint, Microsoft Office, Outlook, OneDrive, LinkedIn, LibreOffice, corporate suites, advertising and sponsored apps, news feeds, shopping services, trial antivirus, promotional games, and social media apps. The image audit rejects the known package names and prefixes in `packages/exclusions.regex`. Review the complete package and startup inventories for new products or renamed packages.
 - Use Firefox ESR as the supported browser. Disable sponsored content, news recommendations, and telemetry by default. Use mature browser engines.
 - Keep one default browser, terminal, and file manager. Avoid KDE bundles, Electron, and background work by optional apps. Nova Store offers optional office software on demand. Keep AI model and gaming-service packages out of the base image.

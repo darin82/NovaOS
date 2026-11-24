@@ -2,6 +2,10 @@
 
 ## 0.1.0 Alpha · first release target
 
+- Refined the wallpaper and shared native controls, branded boot and sign-in, and fixed the Minimal profile Music launcher.
+
+- Added Nova Installer, first-boot Welcome, Recovery tools and update notifications.
+
 - Added opt-in Nova AI with streamed local and cloud responses, secure credential handling, and a confirmation-based system action palette.
 
 - Added Nova Music and replaced the initial Store menu with a native APT and Flatpak application catalog.

@@ -27,7 +27,7 @@ if [ ! -r /etc/debian_version ] || ! grep -Eq '^13([.]|$)' /etc/debian_version; 
     exit 1
 fi
 
-for tool in lb debootstrap xorriso grub-script-check unsquashfs python3 sha256sum; do
+for tool in lb debootstrap xorriso grub-script-check unsquashfs python3 sha256sum rsvg-convert; do
     command -v "$tool" >/dev/null || { echo "Missing tool: $tool" >&2; exit 1; }
 done
 python3 "$ROOT/tests/validate-source.py"
@@ -43,7 +43,7 @@ printf 'Build directory: %s\n' "$BUILD_DIR"
 cd "$BUILD_DIR"
 
 PHASE=configuration
-BOOT="boot=live components live-config.nocomponents=sddm hostname=novaos username=$LIVE_USER quiet"
+BOOT="boot=live components live-config.nocomponents=sddm hostname=novaos username=$LIVE_USER quiet splash"
 lb config noauto \
     --mode debian --distribution "$SUITE" --architectures "$ARCH" \
     --debootstrap-options '--include=ca-certificates' \
@@ -75,6 +75,16 @@ for scheme in "$ROOT/desktop/"*.colors; do
 done
 install -Dm0644 "$ROOT/desktop/kdeglobals" "$tree/etc/xdg/kdeglobals"
 install -Dm0644 "$ROOT/desktop/kwinrc" "$tree/etc/xdg/kwinrc"
+install -Dm0644 "$ROOT/desktop/kscreenlockerrc" "$tree/etc/xdg/kscreenlockerrc"
+greeter="$tree/usr/share/sddm/themes/novaos"
+install -Dm0644 "$ROOT/desktop/sddm/metadata.desktop" "$greeter/metadata.desktop"
+install -Dm0644 "$ROOT/desktop/sddm/Main.qml" "$greeter/Main.qml"
+install -Dm0644 "$ROOT/branding/novaos.svg" "$greeter/novaos.svg"
+install -Dm0644 "$ROOT/branding/wallpaper.svg" "$greeter/wallpaper.svg"
+install -Dm0644 "$ROOT/desktop/sddm/50-novaos.conf" "$tree/etc/sddm.conf.d/50-novaos.conf"
+boot_theme="$tree/usr/share/plymouth/themes/novaos"
+install -Dm0644 "$ROOT/desktop/plymouth/novaos.plymouth" "$boot_theme/novaos.plymouth"
+rsvg-convert --width 96 --height 96 "$ROOT/branding/novaos.svg" > "$boot_theme/watermark.png"
 # KGlobalAccel uses KConfig::SimpleConfig and only reads its user copy.
 install -Dm0644 "$ROOT/desktop/kglobalshortcutsrc" "$tree/etc/skel/.config/kglobalshortcutsrc"
 applet="$tree/usr/share/plasma/plasmoids/org.novaos.quicksettings"
@@ -126,7 +136,7 @@ for input in launchers.tsv brand-launchers.awk; do
 done
 install -Dm0644 "$ROOT/apps/Performance.qml" "$tree/usr/lib/novaos/Performance.qml"
 install -Dm0644 "$ROOT/apps/Gaming.qml" "$tree/usr/lib/novaos/Gaming.qml"
-for qml in NovaBridge Music Store; do
+for qml in NovaBridge NovaStyle NovaNotice NovaLoading NovaCard Music Store; do
     install -Dm0644 "$ROOT/apps/$qml.qml" "$tree/usr/lib/novaos/$qml.qml"
 done
 for file in AI.qml org.novaos.AI.desktop actions.py providers.py ollama_install.py; do
@@ -142,6 +152,39 @@ install -Dm0644 "$ROOT/apps/mangohud.conf" "$tree/usr/share/novaos/mangohud.conf
 install -Dm0755 "$ROOT/apps/nova-gaming.py" "$tree/usr/bin/nova-gaming"
 install -Dm0755 "$ROOT/apps/nova-metrics.py" "$tree/usr/lib/novaos/nova-metrics.py"
 install -Dm0755 "$ROOT/scripts/benchmark-guest.py" "$tree/usr/bin/nova-benchmark"
+
+installer="$ROOT/installer"
+calamares="$tree/etc/calamares"
+install -Dm0644 "$installer/settings.conf" "$calamares/settings.conf"
+for module in "$installer/modules/"*.conf; do
+    install -Dm0644 "$module" "$calamares/modules/$(basename "$module")"
+done
+for module in nova-prepare nova-install; do
+    for file in main.py module.desc; do
+        install -Dm0644 "$installer/modules/$module/$file" "$tree/usr/lib/calamares/modules/$module/$file"
+    done
+done
+brand="$calamares/branding/novaos"
+install -Dm0644 "$installer/branding/novaos/show.qml" "$brand/show.qml"
+sed "s/@VERSION@/$VERSION/g" "$installer/branding/novaos/branding.desc.in" > "$brand/branding.desc"
+install -Dm0644 "$ROOT/branding/novaos.svg" "$brand/novaos.svg"
+install -Dm0644 "$ROOT/branding/wallpaper.svg" "$brand/wallpaper.svg"
+for name in nova-install nova-recovery nova-welcome nova-update-notify; do
+    install -Dm0755 "$installer/$name" "$tree/usr/bin/$name"
+done
+install -Dm0644 "$installer/org.novaos.Install.desktop" "$tree/usr/share/applications/org.novaos.Install.desktop"
+install -Dm0644 "$installer/org.novaos.Install.desktop" "$tree/usr/share/novaos/desktop/Install NovaOS.desktop"
+install -Dm0644 "$installer/org.novaos.Recovery.desktop" "$tree/usr/share/applications/org.novaos.Recovery.desktop"
+install -Dm0644 "$installer/calamares-upstream-hidden.desktop" "$tree/etc/xdg/autostart/calamares-desktop-icon.desktop"
+install -Dm0644 "$installer/calamares-upstream-hidden.desktop" "$tree/usr/local/share/applications/calamares-install-debian.desktop"
+install -Dm0644 "$installer/live-setup.desktop" "$tree/etc/xdg/autostart/nova-live-installer.desktop"
+install -Dm0644 "$installer/nova-welcome.desktop" "$tree/etc/xdg/autostart/nova-welcome.desktop"
+install -Dm0644 "$installer/Welcome.qml" "$tree/usr/lib/novaos/Welcome.qml"
+install -Dm0755 "$installer/nova-welcome-action.py" "$tree/usr/lib/novaos/nova-welcome-action.py"
+for unit in service timer; do
+    install -Dm0644 "$installer/nova-update-notify.$unit" "$tree/usr/lib/systemd/user/nova-update-notify.$unit"
+done
+install -Dm0644 "$ROOT/docs/RECOVERY.md" "$tree/usr/share/doc/novaos/recovery/RECOVERY.md"
 for entry in "$ROOT/apps/"*.desktop; do
     install -Dm0644 "$entry" "$tree/usr/share/applications/$(basename "$entry")"
 done

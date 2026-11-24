@@ -137,6 +137,13 @@ PlasmoidItem {
                 enabled: !root.busy
                 onClicked: root.request("settings")
             }
+            Controls.Button {
+                text: "Desktop effects…"
+                Layout.columnSpan: 2
+                Layout.fillWidth: true
+                enabled: !root.busy
+                onClicked: root.request("effects")
+            }
         }
         Controls.Label {
             Layout.fillWidth: true

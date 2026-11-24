@@ -1,0 +1,4 @@
+type: job
+name: nova-prepare
+interface: python
+script: main.py

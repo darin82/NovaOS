@@ -1,0 +1,250 @@
+#!/usr/bin/python3
+"""Read-only diagnostics and explicit, narrowly scoped NovaOS repair tools."""
+import argparse
+import json
+import os
+from pathlib import Path
+import re
+import shutil
+import stat
+import subprocess
+import sys
+import time
+
+
+def run(*args):
+    subprocess.run(args, check=True)
+
+
+def output(*args):
+    return subprocess.check_output(args, text=True).strip()
+
+
+def confirmed(phrase, summary):
+    print(summary)
+    if input(f"Type {phrase} to continue: ").strip() != phrase:
+        raise ValueError("Operation cancelled.")
+
+
+def hardware():
+    print(f"CPU architecture: {os.uname().machine}")
+    for line in Path("/proc/meminfo").read_text().splitlines():
+        if line.startswith(("MemTotal:", "MemAvailable:")):
+            print(line)
+    print(f"/ space available: {shutil.disk_usage('/').free // 2**20} MiB")
+    secure = list(Path("/sys/firmware/efi/efivars").glob("SecureBoot-*"))
+    mode = "Legacy BIOS" if not Path("/sys/firmware/efi").exists() else "UEFI"
+    if secure:
+        try:
+            mode += " (Secure Boot " + ("enabled" if secure[0].read_bytes()[4] else "disabled") + ")"
+        except (OSError, IndexError):
+            mode += " (Secure Boot status unavailable)"
+    print(mode)
+    if shutil.which("lspci"):
+        devices = output("lspci", "-nn")
+        print("\nPCI graphics, networking, audio and storage:")
+        print("\n".join(line for line in devices.splitlines() if re.search(
+            r"VGA|3D controller|Display|Ethernet|Network|Audio|Multimedia|SATA|NVMe|RAID|SCSI", line, re.I)))
+    print("\nBluetooth controllers:",
+          ", ".join(item.name for item in Path("/sys/class/bluetooth").glob("hci*")) or "none detected")
+    for label, command in (("Network", ("nmcli", "device", "status")), ("Audio", ("wpctl", "status"))):
+        try:
+            print(f"\n{label}:\n" + output(*command))
+        except (OSError, subprocess.SubprocessError):
+            print(f"{label} status unavailable in this session.")
+    print("\nStorage:")
+    run("lsblk", "-o", "NAME,TYPE,TRAN,SIZE,FSTYPE,MOUNTPOINTS")
+
+
+def block_device(path, kind):
+    device = Path(path).resolve()
+    if not str(device).startswith("/dev/") or not stat.S_ISBLK(device.stat().st_mode):
+        raise ValueError("Select an existing block device.")
+    if output("lsblk", "-dn", "-o", "TYPE", str(device)) != kind:
+        raise ValueError(f"The selected device must be a {kind}.")
+    return str(device)
+
+
+def mounted_root(path):
+    root = Path(path).resolve()
+    if not str(root).startswith("/mnt/") or not root.is_mount():
+        raise ValueError("Mount the installed NovaOS root at a path below /mnt.")
+    release = root / "etc/os-release"
+    if release.is_symlink() or not release.is_file() or "ID=novaos" not in release.read_text().splitlines():
+        raise ValueError("The selected target is not a mounted NovaOS system.")
+    return root
+
+
+def boot_repair(path, disk):
+    root = mounted_root(path)
+    disk = block_device(disk, "disk")
+    source = output("findmnt", "-n", "-M", str(root), "-o", "SOURCE").split("[")[0]
+    if disk not in output("lsblk", "-rsn", "-o", "PATH", source).splitlines():
+        raise ValueError("The selected disk does not back the mounted NovaOS root.")
+    uefi = Path("/sys/firmware/efi").is_dir()
+    for name in ("dev", "proc", "sys"):
+        if not (root / name).is_mount():
+            raise ValueError(f"Bind-mount the target's {name} first.")
+    if uefi:
+        variables = list(Path("/sys/firmware/efi/efivars").glob("SecureBoot-*"))
+        if any(variable.read_bytes()[4:5] == b"\x01" for variable in variables):
+            raise ValueError("This alpha cannot repair an installation while Secure Boot is enabled.")
+        efi = root / "boot/efi"
+        if not efi.is_mount() or output("findmnt", "-n", "-M", str(efi), "-o", "FSTYPE") != "vfat":
+            raise ValueError("Mount the target EFI partition at boot/efi first.")
+        efi_device = output("findmnt", "-n", "-M", str(efi), "-o", "SOURCE")
+        if disk not in output("lsblk", "-rsn", "-o", "PATH", efi_device).splitlines():
+            raise ValueError("The EFI partition does not belong to the selected disk.")
+        options = ["--target=x86_64-efi", "--efi-directory=/boot/efi", "--bootloader-id=NovaOS"]
+    else:
+        options = ["--target=i386-pc", disk]
+    confirmed("REPAIR BOOT", f"Rewrite GRUB for {root} on {disk}. No partition will be formatted.")
+    run("chroot", str(root), "grub-install", *options)
+    run("chroot", str(root), "update-grub")
+
+
+def package_repair(path):
+    root = mounted_root(path) if path else None
+    if not root and "boot=live" in Path("/proc/cmdline").read_text().split():
+        raise ValueError("Provide a mounted installed NovaOS target when running from live media.")
+    prefix = ["chroot", str(root)] if root else []
+    confirmed("REPAIR PACKAGES", f"Resume interrupted package setup on {root or '/'} using APT.")
+    run(*prefix, "dpkg", "--configure", "-a")
+    run(*prefix, "apt-get", "--no-remove", "-o", "APT::Get::AllowUnauthenticated=false",
+        "-o", "Acquire::AllowInsecureRepositories=false", "-f", "install")
+
+
+def snapshot(operation, path, name):
+    top = Path(path).resolve()
+    if not str(top).startswith("/mnt/") or output("findmnt", "-n", "-M", str(top), "-o", "FSTYPE,FSROOT").split() != ["btrfs", "/"]:
+        raise ValueError("Mount a supported Btrfs filesystem top level (subvolid=5) below /mnt.")
+    if not re.fullmatch(r"[a-zA-Z0-9][a-zA-Z0-9._-]{0,63}", name):
+        raise ValueError("Choose a short snapshot name made of letters, digits, dots, hyphens and underscores.")
+    if not (top / "@home").is_dir() or not (top / "@/usr/lib/novaos/os-release").is_file():
+        raise ValueError("Supported Btrfs layout requires separate NovaOS @ and @home subvolumes.")
+    for subvolume in ("@", "@home"):
+        output("btrfs", "subvolume", "show", str(top / subvolume))
+    mounts = (top / "@/etc/fstab").read_text().splitlines()
+    if not any(len(fields) >= 4 and fields[1:3] == ["/", "btrfs"] and
+               {"subvol=@", "subvol=/@"}.intersection(fields[3].split(","))
+               for fields in (line.split() for line in mounts)):
+        raise ValueError("The installed fstab must select the @ root subvolume by name.")
+    snapshots = top / ".nova-snapshots"
+    target = snapshots / name
+    if operation == "snapshot-create":
+        confirmed("CREATE SNAPSHOT", f"Create a system snapshot named {name}. Personal files are separate.")
+        snapshots.mkdir(mode=0o700, exist_ok=True)
+        if snapshots.is_symlink() or target.exists():
+            raise ValueError("Snapshot location is linked or the name is already in use.")
+        run("btrfs", "subvolume", "snapshot", "-r", str(top / "@"), str(target))
+        return
+    if "boot=live" not in Path("/proc/cmdline").read_text().split() or snapshots.is_symlink() or target.is_symlink():
+        raise ValueError("Restore from the live recovery ISO using a local snapshot.")
+    if not (target / "usr/lib/novaos/os-release").is_file():
+        raise ValueError("The snapshot does not contain NovaOS.")
+    output("btrfs", "subvolume", "show", str(target))
+    if any("@]" in (item.get("source") or "") for item in
+           json.loads(output("findmnt", "--list", "--json", "-o", "SOURCE"))["filesystems"]):
+        raise ValueError("Unmount the installed root subvolume before restoring.")
+    previous = top / ("@.before-" + str(time.time_ns()))
+    confirmed("RESTORE SYSTEM", f"Promote snapshot {name}. Previous system stays at {previous.name}; @home stays separate.")
+    (top / "@").rename(previous)
+    try:
+        run("btrfs", "subvolume", "snapshot", str(target), str(top / "@"))
+    except BaseException:
+        if not (top / "@").exists():
+            previous.rename(top / "@")
+        raise
+
+
+def copy_files(source, target):
+    source, target = Path(source).absolute(), Path(target).absolute()
+    if target.exists() or target.is_symlink() or target.resolve().is_relative_to(source.resolve()):
+        raise ValueError("Choose a new destination outside the selected source.")
+    if source.is_symlink():
+        target.symlink_to(os.readlink(source))
+    elif source.is_dir():
+        shutil.copytree(source, target, symlinks=True)
+    elif source.is_file():
+        with source.open("rb") as incoming, target.open("xb") as outgoing:
+            shutil.copyfileobj(incoming, outgoing)
+        shutil.copystat(source, target)
+    else:
+        raise ValueError("Select an existing file or folder.")
+
+
+def desktop_reset():
+    if os.environ.get("XDG_SESSION_TYPE") in {"wayland", "x11"}:
+        raise ValueError("Log out of Plasma and run this command from a text console.")
+    confirmed("RESET DESKTOP", "Move Plasma and KWin configuration to a backup in your configuration directory.")
+    config = Path(os.environ.get("XDG_CONFIG_HOME", Path.home() / ".config"))
+    backup = config / f"nova-desktop-backup-{time.time_ns()}"
+    backup.mkdir(mode=0o700)
+    for name in ("kdeglobals", "kwinrc", "kglobalshortcutsrc", "plasmashellrc",
+                 "plasma-org.kde.plasma.desktop-appletsrc"):
+        item = config / name
+        if item.exists() or item.is_symlink():
+            item.rename(backup / name)
+    source = Path("/etc/skel/.config/kglobalshortcutsrc")
+    if source.is_file():
+        shutil.copyfile(source, config / source.name)
+    print(f"Settings backup: {backup}")
+
+
+def choose():
+    result = subprocess.run(["kdialog", "--title", "Nova Recovery", "--menu", "Recovery tools",
+                             "hardware", "Hardware overview", "disk", "Inspect disk health",
+                             "logs", "Export accessible journal logs", "files", "Backup or restore selected files",
+                             "manual", "Boot, package, desktop and snapshot repair instructions"],
+                            capture_output=True, text=True)
+    if result.returncode:
+        return
+    action = result.stdout.strip()
+    if action == "manual":
+        run("dolphin", "/usr/share/doc/novaos/recovery")
+    else:
+        run("konsole", "--hold", "-e", "/usr/bin/nova-recovery", action)
+
+
+def main():
+    os.umask(0o077)
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("action", choices=("choose", "hardware", "disk", "logs", "files",
+                                           "boot", "packages", "snapshot-create", "snapshot-restore", "desktop"))
+    parser.add_argument("values", nargs="*")
+    args = parser.parse_args()
+    action, values = args.action, args.values
+    try:
+        if action == "choose":
+            choose()
+        elif action == "hardware":
+            hardware()
+        elif action == "disk":
+            device = block_device(values[0] if values else input("Whole disk, e.g. /dev/sda: "), "disk")
+            run("sudo", "smartctl", "-a", device)
+        elif action == "logs":
+            path = values[0] if values else input("New destination file: ")
+            with Path(path).expanduser().open("xb") as report:
+                subprocess.run(["journalctl", "-b", "-n", "2000", "--no-pager"], stdout=report, check=True)
+        elif action == "files":
+            paths = values or [input("Source file or folder: "), input("New destination: ")]
+            copy_files(*(os.path.expanduser(path) for path in paths))
+        elif action == "desktop":
+            if os.geteuid() == 0:
+                raise ValueError("Run desktop reset as the account being repaired.")
+            desktop_reset()
+        else:
+            if os.geteuid() != 0:
+                raise ValueError("Use sudo for this specific repair command if authorized.")
+            if action == "boot":
+                boot_repair(*values)
+            elif action == "packages":
+                package_repair(values[0] if values else None)
+            else:
+                snapshot(action, *values)
+    except (OSError, ValueError, IndexError, TypeError, subprocess.SubprocessError, EOFError) as error:
+        raise SystemExit(str(error))
+
+
+if __name__ == "__main__":
+    main()

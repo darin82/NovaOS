@@ -1,0 +1,32 @@
+#!/bin/sh
+set -eu
+
+test -r /run/live/medium/live/filesystem.squashfs || {
+    echo 'Start from the NovaOS live ISO to use this installer.' >&2
+    exit 1
+}
+if [ "${1:-}" = desktop ]; then
+    desktop="$HOME/Desktop"
+    if command -v xdg-user-dir >/dev/null 2>&1; then
+        desktop=$(xdg-user-dir DESKTOP)
+    fi
+    mkdir -p "$desktop"
+    install -m0755 '/usr/share/novaos/desktop/Install NovaOS.desktop' "$desktop/Install NovaOS.desktop"
+    if grep -qw nova.recovery /proc/cmdline; then
+        exec kdialog --title 'Nova Recovery' --msgbox 'Open Nova Recovery from the launcher for diagnostics, backups and repair.'
+    fi
+    exit 0
+fi
+if [ "$(uname -m)" != x86_64 ]; then
+    kdialog --error 'This NovaOS installer requires an x86-64 CPU.'
+    exit 1
+fi
+for variable in /sys/firmware/efi/efivars/SecureBoot-*; do
+    [ -r "$variable" ] || continue
+    if [ "$(od -An -tu1 -j4 -N1 "$variable" | tr -d ' ')" = 1 ]; then
+        kdialog --error 'This Alpha installer requires Secure Boot to be disabled in the test VM.'
+        exit 1
+    fi
+done
+kdialog --title 'Install NovaOS' --yesno 'Back up important files first. Use a disposable virtual disk for Alpha testing. Partition changes can erase data. Review the selected disk on the final summary before confirming.' || exit 0
+exec /usr/bin/calamares-install-debian

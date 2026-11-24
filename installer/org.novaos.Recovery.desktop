@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=Nova Recovery
+Comment=Inspect hardware, export logs and open recovery tools
+Exec=nova-recovery choose
+Icon=system-help
+Categories=System;

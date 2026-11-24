@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=Install NovaOS
+Comment=Install NovaOS on a disk you select and confirm
+Exec=nova-install
+Icon=novaos
+Categories=System;

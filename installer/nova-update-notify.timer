@@ -1,0 +1,10 @@
+[Unit]
+Description=Notify when signed Debian security updates are available
+ConditionKernelCommandLine=!boot=live
+
+[Timer]
+OnStartupSec=15min
+OnUnitActiveSec=24h
+
+[Install]
+WantedBy=timers.target

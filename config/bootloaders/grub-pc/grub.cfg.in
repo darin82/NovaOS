@@ -12,7 +12,12 @@ menuentry "NovaOS @NOVA_VERSION@ Alpha - Start live desktop" --hotkey=n {
 }
 
 menuentry "NovaOS @NOVA_VERSION@ Alpha - Console diagnostics" --hotkey=c {
-    linux @KERNEL_LIVE@ @APPEND_LIVE@ systemd.unit=multi-user.target live-config.noautologin
+    linux @KERNEL_LIVE@ @APPEND_LIVE@ plymouth.enable=0 systemd.unit=multi-user.target live-config.noautologin
+    initrd @INITRD_LIVE@
+}
+
+menuentry "NovaOS @NOVA_VERSION@ Alpha - Recovery desktop" --hotkey=r {
+    linux @KERNEL_LIVE@ @APPEND_LIVE@ nova.recovery
     initrd @INITRD_LIVE@
 }
 

@@ -2,10 +2,19 @@
 set -eu
 
 signed_apt() {
-    sudo apt-get \
+    sudo systemd-inhibit --what=shutdown:sleep --mode=block --who='Nova Update' \
+        --why='Debian package operation' apt-get -o DPkg::Lock::Timeout=60 \
         -o APT::Get::AllowUnauthenticated=false \
         -o Acquire::AllowInsecureRepositories=false \
         -o Acquire::AllowDowngradeToInsecureRepositories=false "$@"
+}
+
+reboot_status() {
+    if [ -e /run/reboot-required ]; then
+        printf '\nA package requested a restart.\n'
+    elif [ -L /vmlinuz ] && [ "$(basename "$(readlink -f /vmlinuz)")" != "vmlinuz-$(uname -r)" ]; then
+        printf '\nA different kernel is installed. Review available kernels before restarting.\n'
+    fi
 }
 
 case "${1:-choose}" in
@@ -13,6 +22,7 @@ case "${1:-choose}" in
         action=$(kdialog --title 'Nova Update' --menu 'Software updates' \
             check 'Refresh signed package lists and preview updates' \
             info 'Inspect a package' \
+            history 'View APT update history' \
             apply 'Review and install updates') || exit 0
         if [ "$action" = info ]; then
             package=$(kdialog --title 'Nova Update' --inputbox 'Debian package name') || exit 0
@@ -34,6 +44,17 @@ case "${1:-choose}" in
                 exit 1
             fi
         fi
+        reboot_status
+        ;;
+    history)
+        for history in /var/log/apt/history.log /var/log/apt/history.log.*; do
+            [ -r "$history" ] || continue
+            case "$history" in
+                *.gz) gzip -cd "$history" ;;
+                *) cat "$history" ;;
+            esac
+        done
+        reboot_status
         ;;
     info)
         package=${2:-}
@@ -45,5 +66,5 @@ case "${1:-choose}" in
         apt-cache show --no-all-versions "$package"
         apt-cache policy "$package"
         ;;
-    *) echo 'Usage: nova-update [check|apply|info PACKAGE]' >&2; exit 2 ;;
+    *) echo 'Usage: nova-update [check|apply|history|info PACKAGE]' >&2; exit 2 ;;
 esac

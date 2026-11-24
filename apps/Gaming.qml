@@ -16,6 +16,8 @@ ApplicationWindow {
     property var game: null
     property string message: ""
     property bool busy: false
+    NovaStyle { id: tokens }
+    palette.highlight: tokens.accent
 
     function invoke(action, payload) {
         if (busy)
@@ -69,7 +71,7 @@ ApplicationWindow {
     header: ToolBar {
         RowLayout {
             anchors.fill: parent
-            anchors.margins: 6
+            anchors.margins: tokens.compact
             Button { text: "Refresh"; enabled: !hub.busy; onClicked: hub.invoke("library", null) }
             Button { text: "Add game"; onClicked: hub.editGame(null) }
             Button { text: "Gaming setup"; onClicked: setup.open() }
@@ -81,8 +83,8 @@ ApplicationWindow {
 
     RowLayout {
         anchors.fill: parent
-        anchors.margins: 12
-        spacing: 12
+        anchors.margins: tokens.gutter
+        spacing: tokens.gutter
 
         ListView {
             id: library
@@ -91,7 +93,7 @@ ApplicationWindow {
             clip: true
             model: hub.games
             ScrollBar.vertical: ScrollBar {}
-            delegate: ItemDelegate {
+            delegate: NovaCard {
                 required property var modelData
                 width: library.width
                 highlighted: hub.game && hub.game.id === modelData.id
@@ -116,13 +118,8 @@ ApplicationWindow {
             ColumnLayout {
                 width: details.availableWidth
                 spacing: 8
-                Label {
-                    Layout.fillWidth: true
-                    visible: text !== ""
-                    text: hub.message
-                    textFormat: Text.PlainText
-                    wrapMode: Text.Wrap
-                }
+                NovaNotice { text: hub.message }
+                NovaLoading { visible: hub.busy }
                 Label {
                     Layout.fillWidth: true
                     text: hub.game ? hub.game.name : "Select a game"

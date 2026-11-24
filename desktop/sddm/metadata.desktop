@@ -1,0 +1,8 @@
+[SddmGreeterTheme]
+Name=NovaOS
+Description=NovaOS login
+Type=sddm-theme
+Version=0.1
+MainScript=Main.qml
+Theme-Id=novaos
+QtVersion=6

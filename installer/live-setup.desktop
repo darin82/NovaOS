@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Name=Nova Live Installer Shortcut
+Exec=nova-install desktop
+OnlyShowIn=KDE;
+NoDisplay=true

@@ -78,6 +78,7 @@ case "${1:-status}:${2:-}" in
         esac
         ;;
     settings:) systemsettings </dev/null >/dev/null 2>&1 & ;;
+    effects:) systemsettings kcm_kwin_effects </dev/null >/dev/null 2>&1 & ;;
     *) echo 'Invalid Nova appearance option.' >&2; exit 2 ;;
 esac
 status

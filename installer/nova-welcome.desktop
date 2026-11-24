@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Name=Nova Welcome
+Exec=nova-welcome
+OnlyShowIn=KDE;
+NoDisplay=true

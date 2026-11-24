@@ -43,3 +43,19 @@ Start with EFI disabled to test BIOS. Power off the test VM, enable EFI with Sec
 - Record BIOS and UEFI results, VirtualBox version, ISO SHA-256, and any issues in PROGRESS.md.
 
 If the display stays black, collect `journalctl -b -u sddm`, `cat /var/log/live/config.log`, and `~/.local/share/sddm/wayland-session.log` when accessible from a guest TTY. The GRUB **Console diagnostics** entry boots to a login prompt. Sign in as `nova` with the Debian live-session password `live`. Try the alternate VMSVGA 3D setting in the test VM and report the setting used.
+
+## Disposable install test
+
+After the diskless test, create a separate VM with a new virtual disk of at least 25 GiB. Keep physical disks and the existing NovaOS VM detached. With the ISO mounted, open **Install NovaOS**. Test the profile, locale and encryption choices. Confirm the partition summary only after checking the virtual disk's identity and size. An install should never start when the confirmation is dismissed.
+
+Eject the ISO after completion and boot the VM from its own virtual disk. Confirm local sign-in, one-time Nova Welcome, networking, audio, signed updates, and GRUB recovery entries. Repeat with another disposable virtual disk for encrypted install or a different firmware mode. Use [Nova Recovery](RECOVERY.md) only with the selected VM target.
+
+## Polish and performance checks
+
+Capture separate results at 1280×720, 1920×1080, 2560×1440 and 3840×2160 where supported. Test native and fractional scaling, keyboard focus, multiple displays, touchpad gestures, audio and network controls, a test USB device, suspend and wake, and a low-memory test VM. Check the SDDM login, lock screen, Plymouth splash, GRUB console diagnostics, and the encrypted unlock prompt. Compare a clean idle desktop against the same VM configuration using:
+
+```sh
+nova-benchmark --label optimized > optimized.json
+```
+
+After pushing main to the configured GitHub remote and authorizing the disposable build runner, start one Linux build with `gh workflow run iso.yml --ref main`. Use `gh run watch` and download the successful `novaos-amd64` artifact. Record its ISO checksum, workflow URL, and each VM result in PROGRESS.md.
