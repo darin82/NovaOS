@@ -1,6 +1,7 @@
 # Whole Debian package names. Keep shared libraries unless they implement the excluded product.
 ^(microsoft-edge|msedge|teams|msteams|microsoft-teams|facebook|powerpoint|ms-office|microsoft-office|outlook|onedrive|linkedin|office365|libreoffice|openoffice|onlyoffice|wps-office|calligra|abiword|gnumeric)([-.].*)?$
-^(chromium|google-chrome|konqueror|epiphany-browser|thunderbird|evolution|kmail|kontact|akonadi|nextcloud-desktop|dropbox)([-.].*)?$
+# Bluedevil requires bluez-obexd, whose libedataserver dependency needs these shared files.
+^(chromium|google-chrome|konqueror|epiphany-browser|thunderbird|evolution(?!-data-server-common$)|kmail|kontact|akonadi|nextcloud-desktop|dropbox)([-.].*)?$
 ^(electron[0-9]*|discord|slack|telegram-desktop|signal-desktop|whatsapp|element-desktop|zoom|skypeforlinux)([-.].*)?$
 ^(steam|lutris|heroic|gamescope|gamemode|gamemoded|ollama|llama-cpp|localai|clamav|akregator|rssguard|liferea)([-.].*)?$
 ^(task-kde-desktop|live-task-kde|kde-full|kde-standard|kde-plasma-desktop|kde-applications|kdegames|gnome-games|kwrite|plasma-discover)([-.].*)?$

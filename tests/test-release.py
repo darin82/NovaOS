@@ -18,12 +18,20 @@ class Release(unittest.TestCase):
     def test_apt_dependencies_are_checked_before_build(self):
         with tempfile.TemporaryDirectory() as temporary:
             plan = Path(temporary) / "resolution.log"
-            plan.write_text("Inst dolphin (1 Debian)\nInst libreoffice-writer:amd64 (1 Debian)\n")
-            checked = subprocess.run([
+            allowed = "Inst dolphin (1 Debian)\nInst evolution-data-server-common (1 Debian)\n"
+            plan.write_text(allowed)
+            command = [
                 sys.executable, ROOT / "scripts/audit-image.py", "--apt-plan", ROOT, plan,
-            ], capture_output=True, text=True)
+            ]
+            checked = subprocess.run(command, capture_output=True, text=True)
+            self.assertEqual(checked.returncode, 0, checked.stderr)
+            plan.write_text(allowed + "Inst evolution (1 Debian)\nInst evolution-data-server:amd64 (1 Debian)\n"
+                            "Inst evolution-plugins (1 Debian)\nInst libreoffice-writer:amd64 (1 Debian)\n")
+            checked = subprocess.run(command, capture_output=True, text=True)
         self.assertNotEqual(checked.returncode, 0)
         self.assertIn("libreoffice-writer", checked.stderr)
+        self.assertIn("evolution, evolution-data-server, evolution-plugins", checked.stderr)
+        self.assertNotIn("evolution-data-server-common", checked.stderr)
 
     def test_iso_release_checks_are_wired(self):
         build = (ROOT / "scripts/build-iso.sh").read_text()
